@@ -39,8 +39,8 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	int main(int argc, char* args[]) //mainimizi açýyoruz fakat parantez içlerine dýþardan uygulamayý açarken gelicek olan komutlarýn sayýsýný tutmak icin int argc, dýþardan gelen komutlarýn ne oldugunu tutabilcegimiz bir char pointer dizisi olusturuyoruz.  
 //pointer þeklinde olusturmamýzýn sebebi ise birden fazla string yapýsýný tutabilmek
 {
-		SDL_Rect gemi;//gemi olusturmak icin bir SDL_Rect ile gemi tanimliyoruz
-		Uint32 gemirenk;//int yerine undefined int ile ayný iþlevli olan sdl kütüphanesinin içinde bulunan 32 bit yer kapalayan Uint32 ile gemirengini tanýmlýyoruz
+		SDL_Rect gemi,kanat1,kanat2,burun;//gemi olusturmak icin bir SDL_Rect ile gemi ve diger seyleri tanimliyoruz
+		Uint32 arkaplanrenk,gemirenk,kanat1renk,kanat2renk,burunrenk;//int yerine undefined int ile ayný iþlevli olan sdl kütüphanesinin içinde bulunan 32 bit yer kapalayan Uint32 ile gemirengini ve digerlerini tanýmlýyoruz
 	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 	SDL_Event olay; //basýlan tuslari tutmamiz icin
 		
@@ -51,13 +51,29 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		}
 		
 
-		gemi.x = 335;//geminin koordinatlarýný giriyoruz x=x ekseninde nerede oldugu, y=yekseninde nerede oldudu, h geminin yukleklik, w geminin genislik
-		gemi.y = 340;
-		gemi.h = 50;
-		gemi.w = 30;
-
+		gemi.x = 330;//geminin koordinatlarýný giriyoruz x=x ekseninde nerede oldugu, y=yekseninde nerede oldudu, h geminin yukleklik, w geminin genislik
+		gemi.y = 310;
+		gemi.h = 80;
+		gemi.w = 40;
+		kanat1.h = 55;
+		kanat1.w = 25;
+		kanat1.x = 320;
+		kanat1.y = 325;
+		kanat2.h = 55;
+		kanat2.w = 25;
+		kanat2.x = 355;
+		kanat2.y = 325;
+		burun.h = 20;
+		burun.w = 12;
+		burun.x = 344;
+		burun.y = 300;
+		arkaplanrenk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0xFF, 0xFF);//arka plan rengini olusturuyoruz formatý rgb olarak tanýmlýyoruz
 		gemirenk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);//geminin rengini veriyoruz
-	
+		kanat1renk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);
+		kanat2renk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);
+		burunrenk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);
+
+
 		while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
 
 	{
@@ -70,10 +86,11 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 
 		}
 	
-		SDL_FillRect(ekranYuzeyi, NULL, SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0xFF, 0xFF)); // ekranyüzeyin yüzeyinin boyamak istegimiz alanýný boyuyoruz null yazarak hepsini boyuyoruz .format yaparak ise rgb formatýna sabitliyoruz.
-		
+		SDL_FillRect(ekranYuzeyi, NULL, arkaplanrenk); // ekranyüzeyin yüzeyinin boyamak istegimiz alanýný boyuyoruz null yazarak hepsini boyuyoruz. neyi boyuyacaðimizi sona yaziyoruz fonksiyon yapýsý geregi ve her seyi almamasi icin pointer olarak gönderiyoruz.
+		SDL_FillRect(ekranYuzeyi, &kanat1, kanat1renk);
 		SDL_FillRect(ekranYuzeyi, &gemi, gemirenk);//geminin icini boyuyoruz
-		
+		SDL_FillRect(ekranYuzeyi, &kanat2, kanat2renk);
+		SDL_FillRect(ekranYuzeyi, &burun, burunrenk);
 		SDL_UpdateWindowSurface(pencere); //her tusa basýldýktan sonra oyun penceresini guncelliyoruz
 	}
 	
