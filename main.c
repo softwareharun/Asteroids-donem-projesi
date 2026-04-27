@@ -5,8 +5,8 @@
 SDL_Window* pencere = NULL; //penceremizi ve ekranyüzeyimizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
 SDL_Surface* ekranYuzeyi = NULL;
 
-const int pencereUzunlugu = 400; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
-const int pencereGenisligi = 700;
+const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
+const int pencereGenisligi = 900;
 
 bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyoruz mainin icindeki karmasa azalýyor
 {
@@ -51,22 +51,22 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		}
 		
 
-		gemi.x = 330;//geminin koordinatlarýný giriyoruz x=x ekseninde nerede oldugu, y=yekseninde nerede oldudu, h geminin yukleklik, w geminin genislik
-		gemi.y = 310;
 		gemi.h = 80;
 		gemi.w = 40;
+		gemi.x = (pencereGenisligi/2)-(gemi.w/2);//geminin koordinatlarýný giriyoruz x=x ekseninde nerede oldugu, y=yekseninde nerede oldudu, h geminin yukleklik, w geminin genislik
+		gemi.y = pencereUzunlugu - gemi.h - 10;
 		kanat1.h = 55;
-		kanat1.w = 25;
-		kanat1.x = 320;
-		kanat1.y = 325;
+		kanat1.w = 12;
+		kanat1.x = (gemi.x)-(kanat1.w);
+		kanat1.y = pencereUzunlugu - kanat1.h - 10;
 		kanat2.h = 55;
-		kanat2.w = 25;
-		kanat2.x = 355;
-		kanat2.y = 325;
+		kanat2.w = 12;
+		kanat2.x = (gemi.x) + (gemi.w);
+		kanat2.y = pencereUzunlugu - kanat2.h - 10;
 		burun.h = 20;
 		burun.w = 12;
-		burun.x = 344;
-		burun.y = 300;
+		burun.x = (gemi.x) + (gemi.w/2) - (burun.w/2);
+		burun.y = (gemi.y) - burun.h;
 		arkaplanrenk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0xFF, 0xFF);//arka plan rengini olusturuyoruz formatý rgb olarak tanýmlýyoruz
 		gemirenk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);//geminin rengini veriyoruz
 		kanat1renk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);
