@@ -19,9 +19,16 @@ target_link_directories(${PROJECT_NAME} PRIVATE ${SDL2_LIB_DIR})
 
 # SDL2 kütüphanelerini projeye linkliyoruz
 target_link_libraries(${PROJECT_NAME} SDL2 SDL2main)
+target_link_libraries(${PROJECT_NAME} SDL2 SDL2main SDL2_image)
 
 # EXE dosyamýz her oluþtuðunda SDL2.dll dosyasýný EXE'nin yanýna otomatik kopyala
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_CURRENT_SOURCE_DIR}/external/SDL2/lib/x64/SDL2.dll"
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+   
+    # SDL2_image.dll dosyamýzý da EXE'nin yanýna otomatik kopyala
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_CURRENT_SOURCE_DIR}/external/SDL2/lib/x64/SDL2_image.dll"
     $<TARGET_FILE_DIR:${PROJECT_NAME}>)

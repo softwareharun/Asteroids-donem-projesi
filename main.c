@@ -1,14 +1,16 @@
 #include <SDL.h>  //SDL kütüphanesini ekliyoruz
 #include <stdio.h> // c fonksiyonlari icin
 #include <stdbool.h> //game loop için bool kullanmak için
+#include <SDL_image.h> // fotograf yukleyebilmek icin
 
-SDL_Window* pencere = NULL; //penceremizi ve ekranyüzeyimizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
-SDL_Surface* ekranYuzeyi = NULL;
+SDL_Window* pencere = NULL; //penceremizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
+SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
+SDL_Texture* uzayGemisi = NULL;//texture de renderer gibi ekran karti kullanir ve daha hizlidir saydam halde getirebilmek ve fotografi döndürebilmek icin kullaniyoruz
 
-const int pencereUzunlugu = 400; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
-const int pencereGenisligi = 700;
-SDL_Rect gemi, kanat1, kanat2, burun;//gemi olusturmak icin bir SDL_Rect ile gemi ve diger seyleri tanimliyoruz
-Uint32 arkaplanrenk, gemirenk, kanat1renk, kanat2renk, burunrenk;//int yerine undefined int ile ayný iþlevli olan sdl kütüphanesinin içinde bulunan 32 bit yer kapalayan Uint32 ile gemirengini ve digerlerini tanýmlýyoruz
+const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
+const int pencereGenisligi = 800;
+
+SDL_Rect gemi;//gemi olusturmak icin bir SDL_Rect ile gemi ve diger seyleri tanimliyoruz
 
 bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyoruz mainin icindeki karmasa azalýyor
 {
@@ -18,64 +20,60 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 		printf("Dosya aciliamadi.. SDL hatasi :%s\n", SDL_GetError()); //eger bir hata ile karsilasirsak geterror fonksiyonu ile bize hatanýn sebebini alýyoruz
 		return false; //dosya açýlamazsa false döndür
 	}
+	IMG_Init(IMG_INIT_PNG);
 	pencere = SDL_CreateWindow("AsteroidsGame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pencereGenisligi, pencereUzunlugu, SDL_WINDOW_SHOWN); //penceremizi olusturuyoruz ilk parametremiz pencerenin üst cugubunda yazýcak olan isim, ikincisi pencerenin yatay konumda nerden baþlayacagý, üçüncüsü dikey konumda, dört ve besinciler ise pencremizin uzunlugu ve genisligi, sdl window shown yazarak da olusturur olusturmaz pencerenin açýlmasýný saglamak.
 	if (pencere == NULL)//pencere acildi mi kontrol ediyoruz
 	{
 		printf("Pencere olusturualamdi... Hata :%s\n", SDL_GetError()); //ayný sekilde pencere acilamama durumunda hatanin sebebini almak icin 
 		return false; //pencere olusmazsa false döndür
 	}
-	ekranYuzeyi = SDL_GetWindowSurface(pencere); // penceremizi olusturuyoruz
-	if (ekranYuzeyi == NULL)//ekran yuzeyinin null olup olmamasini kontrol ediyoruz
+	ekrancizici = SDL_CreateRenderer(pencere, -1, SDL_RENDERER_ACCELERATED);//rendererimizi olusturuyoruz ilk parametre nerde iþ yapacagi ikincisi ise ekrankarti ile ne sekilde iletisime gececegi biz -1 diyerek sorudan kurtuluyoruz en sondaki ise donanim hizlandirma islemi burda rendereri guclendiriyoruz gibi
+	if(ekrancizici == NULL)//kontrol
 	{
-		printf("ekran yuzeyi olusturulamadi... Hata:%s\n", SDL_GetError());
+		printf("Renderer olusturulamadi.. Hata :%s\n", SDL_GetError());
 		return false;
 	}
+	
 	return true;
 }
 
+
 void gemiOlustur() //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki karmasayi azaltiyoruz
 	{
-	gemi.h = 80;
-	gemi.w = 40;
-	gemi.x = (pencereGenisligi / 2) - (gemi.w / 2);//geminin koordinatlarýný giriyoruz x=x ekseninde nerede oldugu, y=yekseninde nerede oldudu, h geminin yukleklik, w geminin genislik
-	gemi.y = pencereUzunlugu - gemi.h - 10;
-	kanat1.h = 55;
-	kanat1.w = 12;
-	kanat1.x = (gemi.x) - (kanat1.w);
-	kanat1.y = pencereUzunlugu - kanat1.h - 10;
-	kanat2.h = 55;
-	kanat2.w = 12;
-	kanat2.x = (gemi.x) + (gemi.w);
-	kanat2.y = pencereUzunlugu - kanat2.h - 10;
-	burun.h = 20;
-	burun.w = 12;
-	burun.x = (gemi.x) + (gemi.w / 2) - (burun.w / 2);
-	burun.y = (gemi.y) - burun.h;
-	arkaplanrenk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0xFF, 0xFF);//arka plan rengini olusturuyoruz formatý rgb olarak tanýmlýyoruz
-	gemirenk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);//geminin rengini veriyoruz
-	kanat1renk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);
-	kanat2renk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);
-	burunrenk = SDL_MapRGB(ekranYuzeyi->format, 0xFF, 0x00, 0x00);
+	uzayGemisi = IMG_LoadTexture(ekrancizici, "gemi.png");//fotografimizi burda png olarak aliyoruz ilk parametre yine islemi kimin yapicagi
+	if (uzayGemisi == NULL) {
+		printf("gemi yuklenemedi Hata : %s\n", IMG_GetError());
+		}
+	gemi.w = 64;//geminin enini boyunu ve yerini belirliyoruz
+	gemi.h = 64;
+	gemi.x = (pencereGenisligi/2) - (gemi.w/2);
+	gemi.y = (pencereUzunlugu/2) - (gemi.h/2);
 	}
+
 void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bunu çaðýrmamýz yeticek
 {
+	SDL_DestroyTexture(uzayGemisi);//burda fotografi siliyoruz
+	SDL_DestroyRenderer(ekrancizici);//rendereri kapatiyoruz
 	SDL_DestroyWindow(pencere); //olusturdugumuz pencereyi kapatayiyoruz
-	pencere = NULL;//pencerenin adresini de siliyoruz
+	IMG_Quit();//png yi okumayi saglayan motoru durduruyoruz 
 	SDL_Quit(); //baþlattýgýmýz sdl lerin hepsini kapatiyoruz
 }
+
+
 	int main(int argc, char* args[]) //mainimizi açýyoruz fakat parantez içlerine dýþardan uygulamayý açarken gelicek olan komutlarýn sayýsýný tutmak icin int argc, dýþardan gelen komutlarýn ne oldugunu tutabilcegimiz bir char pointer dizisi olusturuyoruz.  
 //pointer þeklinde olusturmamýzýn sebebi ise birden fazla string yapýsýný tutabilmek
 {
-		
-	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
-	SDL_Event olay; //basýlan tuslari tutmamiz icin
-		
 		if (!pencereyiAC())//pencere ac fonksiyonunu çaðýrýp false veya true döndürdügünü kontrol ediyoruz
 		{
 			printf("Pencere veya dosya acilamadi.. Hata%s\n", SDL_GetError());
 	
 		}
 		gemiOlustur(); //gemiyi cagiriyoruz
+	
+	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
+	SDL_Event olay; //basýlan tuslari tutmamiz icin
+
+	
 		
 		while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
 
@@ -86,15 +84,13 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			{
 				oyunDevamEdiyor = false; // döngüden cikart
 			}
-
+			
 		}
-	
-		SDL_FillRect(ekranYuzeyi, NULL, arkaplanrenk); // ekranyüzeyin yüzeyinin boyamak istegimiz alanýný boyuyoruz null yazarak hepsini boyuyoruz. neyi boyuyacaðimizi sona yaziyoruz fonksiyon yapýsý geregi ve her seyi almamasi icin pointer olarak gönderiyoruz.
-		SDL_FillRect(ekranYuzeyi, &kanat1, kanat1renk);
-		SDL_FillRect(ekranYuzeyi, &gemi, gemirenk);//geminin icini boyuyoruz
-		SDL_FillRect(ekranYuzeyi, &kanat2, kanat2renk);
-		SDL_FillRect(ekranYuzeyi, &burun, burunrenk);
-		SDL_UpdateWindowSurface(pencere); //her tusa basýldýktan sonra oyun penceresini guncelliyoruz
+		SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // bu fonksiyonla rengi ve þeffaflýgý belirliyoruz ilk parametre hangi rendererin iþ yaptýgý.
+		SDL_RenderClear(ekrancizici);//burda ise hepsini boyuyoruz
+
+		SDL_RenderCopy(ekrancizici, uzayGemisi, NULL, &gemi); // sdlrendercopy ile sadece gemimizi getiriyoruz. ilk parametremiz çizim iþini hangi rendererin yaptýgýný ikinci parametre neyi getirdiðini üçüncüsü fotografin ne kadarini göstercegi null yaparak hepsini seciyoruz sonuncusu ise nereye ve hangi boyutta oldugu. 
+		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.
 	}
 	
 	pencereyiKapat();//pencereyi kapatiyoruz
