@@ -40,7 +40,6 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	return true;
 }
 
-
 void gemiOlustur() //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki karmasayi azaltiyoruz
 	{
 	uzayGemisi = IMG_LoadTexture(ekrancizici, "gemi.png");//fotografimizi burda png olarak aliyoruz ilk parametre yine islemi kimin yapicagi
@@ -52,6 +51,29 @@ void gemiOlustur() //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki kar
 	gemi.x = (pencereGenisligi/2) - (gemi.w/2);
 	gemi.y = (pencereUzunlugu/2) - (gemi.h/2);
 	}
+
+void gemiyiHareketEttir(Uint8* tus, double* aci, double* yenix, double* yeniy, double hiz)
+{
+	if (tus[SDL_SCANCODE_D])//sdlscancode ile tus kontrolleri yapýyoruz
+	{
+		*aci += 0.25;//aciyi degistiriyoruz
+	}
+	if (tus[SDL_SCANCODE_A])
+	{
+		*aci -= 0.25;
+	}
+	double radyan = *aci * (PI / 180.0); // degisen aciya göre radyanýmýz degisicek
+	if (tus[SDL_SCANCODE_W])
+	{
+		*yenix += sin(radyan) * hiz;  // gemimizin yeni konumunu sin ve cos fonkisyonlari ile tüm yönlere dagýtýyoruz x in sin olma sebebi 0 derecenin kuzeye bakmasi
+		*yeniy -= cos(radyan) * hiz;
+	}
+	if (tus[SDL_SCANCODE_S])
+	{
+		*yenix -= sin(radyan) * hiz;
+		*yeniy += cos(radyan) * hiz;
+	}
+}
 
 void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bunu çaðýrmamýz yeticek
 {
@@ -81,7 +103,8 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	double yeniGemix = gemi.x; //geminin yeni koordinatliarini double ile tutmak icin
 	double yeniGemiy = gemi.y;
 	double gemiHizi = 0.25; //burda hizi belirliyoruz
-		while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
+		
+	while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
 
 	{
 		while (SDL_PollEvent(&olay)) // burada tuslarin durmunu kontrol ediyoruz if yerine while kullanma sebebimiz ve adres olarak tutmamiz delay olmamasi icin ayrica poll event tek kerelik basýmlar için
@@ -93,25 +116,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			
 		}
 
-		if (tuslar[SDL_SCANCODE_D])//sdlscancode ile tus kontrolleri yapýyoruz
-		{
-			gemiAcisi += 0.25;//aciyi degistiriyoruz
-		}
-		if (tuslar[SDL_SCANCODE_A])
-		{
-			gemiAcisi -= 0.25;
-		}
-			double radyan = gemiAcisi * (PI / 180.0); // degisen aciya göre radyanýmýz degisicek
-		if (tuslar[SDL_SCANCODE_W])
-		{
-			yeniGemix += sin(radyan) * gemiHizi;  // gemimizin yeni konumunu sin ve cos fonkisyonlari ile tüm yönlere dagýtýyoruz x in sin olma sebebi 0 derecenin kuzeye bakmasi
-			yeniGemiy -= cos(radyan) * gemiHizi;
-		}
-		if (tuslar[SDL_SCANCODE_S])
-		{
-			yeniGemix -= sin(radyan) * gemiHizi;
-			yeniGemiy += cos(radyan) * gemiHizi;
-		}
+		gemiyiHareketEttir(tuslar, &gemiAcisi, &yeniGemix, &yeniGemiy, gemiHizi);
 
 		gemi.x = (int)yeniGemix; // en son bir int göndermemiz gerektigi icin bu degerleri tekrar gemi.x ve y ye atýyoruz
 		gemi.y = (int)yeniGemiy;
