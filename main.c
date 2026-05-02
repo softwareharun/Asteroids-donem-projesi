@@ -2,6 +2,9 @@
 #include <stdio.h> // c fonksiyonlari icin
 #include <stdbool.h> //game loop için bool kullanmak için
 #include <SDL_image.h> // fotograf yukleyebilmek icin
+#include <math.h> //sin ve cos fonkisyonlarýný eklemek icin
+
+#define PI 3.14159265 // pi yi tanýmlýyoruz
 
 SDL_Window* pencere = NULL; //penceremizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
 SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
@@ -10,7 +13,7 @@ SDL_Texture* uzayGemisi = NULL;//texture de renderer gibi ekran karti kullanir v
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
 const int pencereGenisligi = 800;
 
-SDL_Rect gemi;//gemi olusturmak icin bir SDL_Rect ile gemi ve diger seyleri tanimliyoruz
+SDL_Rect gemi;//gemi olusturmak icin bir SDL_Rect ile gemi tanimliyoruz
 
 bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyoruz mainin icindeki karmasa azalýyor
 {
@@ -73,12 +76,15 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 	SDL_Event olay; //basýlan tuslari tutmamiz icin
 
-	
-		
+	double gemiAcisi = 0.00; // aci degiskeni tanimliyoruz
+	const Uint8* tuslar = SDL_GetKeyboardState(NULL); // burada tus kontrolu yapicaz sadece evet ve hayýr döndürdüðü icin 8 bit yeterli
+	double yeniGemix = gemi.x; //geminin yeni koordinatliarini double ile tutmak icin
+	double yeniGemiy = gemi.y;
+	double gemiHizi = 0.25; //burda hizi belirliyoruz
 		while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
 
 	{
-		while (SDL_PollEvent(&olay)) // burada tuslarin durmunu kontrol ediyoruz if yerine while kullanma sebebimiz ve adres olarak tutmamiz delay olmamasi icin 
+		while (SDL_PollEvent(&olay)) // burada tuslarin durmunu kontrol ediyoruz if yerine while kullanma sebebimiz ve adres olarak tutmamiz delay olmamasi icin ayrica poll event tek kerelik basýmlar için
 		{
 			if (olay.type == SDL_QUIT) // eger kapatma tusuna basilirsa 
 			{
@@ -86,10 +92,34 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			}
 			
 		}
+
+		if (tuslar[SDL_SCANCODE_D])//sdlscancode ile tus kontrolleri yapýyoruz
+		{
+			gemiAcisi += 0.25;//aciyi degistiriyoruz
+		}
+		if (tuslar[SDL_SCANCODE_A])
+		{
+			gemiAcisi -= 0.25;
+		}
+			double radyan = gemiAcisi * (PI / 180.0); // degisen aciya göre radyanýmýz degisicek
+		if (tuslar[SDL_SCANCODE_W])
+		{
+			yeniGemix += sin(radyan) * gemiHizi;  // gemimizin yeni konumunu sin ve cos fonkisyonlari ile tüm yönlere dagýtýyoruz x in sin olma sebebi 0 derecenin kuzeye bakmasi
+			yeniGemiy -= cos(radyan) * gemiHizi;
+		}
+		if (tuslar[SDL_SCANCODE_S])
+		{
+			yeniGemix -= sin(radyan) * gemiHizi;
+			yeniGemiy += cos(radyan) * gemiHizi;
+		}
+
+		gemi.x = (int)yeniGemix; // en son bir int göndermemiz gerektigi icin bu degerleri tekrar gemi.x ve y ye atýyoruz
+		gemi.y = (int)yeniGemiy;
+
 		SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // bu fonksiyonla rengi ve þeffaflýgý belirliyoruz ilk parametre hangi rendererin iþ yaptýgý.
 		SDL_RenderClear(ekrancizici);//burda ise hepsini boyuyoruz
 
-		SDL_RenderCopy(ekrancizici, uzayGemisi, NULL, &gemi); // sdlrendercopy ile sadece gemimizi getiriyoruz. ilk parametremiz çizim iþini hangi rendererin yaptýgýný ikinci parametre neyi getirdiðini üçüncüsü fotografin ne kadarini göstercegi null yaparak hepsini seciyoruz sonuncusu ise nereye ve hangi boyutta oldugu. 
+		SDL_RenderCopyEx(ekrancizici, uzayGemisi, NULL, &gemi, gemiAcisi, NULL, SDL_FLIP_NONE); // sdlrendercopy ile sadece gemimizi getiriyoruz. ilk parametremiz çizim iþini hangi rendererin yaptýgýný ikinci parametre neyi getirdiðini üçüncüsü fotografin ne kadarini göstercegi null yaparak hepsini seciyoruz sonuncusu ise nereye ve hangi boyutta oldugu. 
 		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.
 	}
 	
