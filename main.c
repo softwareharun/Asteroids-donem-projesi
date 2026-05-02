@@ -52,7 +52,7 @@ void gemiOlustur() //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki kar
 	gemi.y = (pencereUzunlugu/2) - (gemi.h/2);
 	}
 
-void gemiyiHareketEttir(Uint8* tus, double* aci, double* yenix, double* yeniy, double hiz)
+void gemiyiHareketEttir(const Uint8* tus, double* aci, double* yenix, double* yeniy, double hiz) // gemi hareketini fonksiyonla yapiyoruz degistirmek istediklerimizi pointer ile sabit kalmasini istediklerimizin degerini alýyoruz
 {
 	if (tus[SDL_SCANCODE_D])//sdlscancode ile tus kontrolleri yapýyoruz
 	{
@@ -72,6 +72,26 @@ void gemiyiHareketEttir(Uint8* tus, double* aci, double* yenix, double* yeniy, d
 	{
 		*yenix -= sin(radyan) * hiz;
 		*yeniy += cos(radyan) * hiz;
+	}
+}
+
+void gemiyiPenceredeTut(double* yenix, double* yeniy) //gemiyi pencerede tutmak icin 
+{
+	if (*yenix < 0) //eger ekranin solundan cikarsa
+	{
+		*yenix = pencereGenisligi; //sagdan gelsin
+	}
+	if (*yenix > pencereGenisligi) // sagdan
+	{
+		*yenix = 0; // sola isinla
+	}
+	if (*yeniy < 0) // yukardan
+	{
+		*yeniy = pencereUzunlugu; // asagi
+	}
+	if (*yeniy > pencereUzunlugu) // asagidan
+	{
+		*yeniy = 0; //yukari
 	}
 }
 
@@ -116,10 +136,10 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			
 		}
 
-		gemiyiHareketEttir(tuslar, &gemiAcisi, &yeniGemix, &yeniGemiy, gemiHizi);
-
+		gemiyiHareketEttir(tuslar, &gemiAcisi, &yeniGemix, &yeniGemiy, gemiHizi);// cagiriyoruz
+		gemiyiPenceredeTut(&yeniGemix, &yeniGemiy);
 		gemi.x = (int)yeniGemix; // en son bir int göndermemiz gerektigi icin bu degerleri tekrar gemi.x ve y ye atýyoruz
-		gemi.y = (int)yeniGemiy;
+		gemi.y = (int)yeniGemiy; // cagiriyoruz
 
 		SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // bu fonksiyonla rengi ve þeffaflýgý belirliyoruz ilk parametre hangi rendererin iþ yaptýgý.
 		SDL_RenderClear(ekrancizici);//burda ise hepsini boyuyoruz
