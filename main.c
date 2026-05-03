@@ -41,6 +41,12 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 
 SDL_Rect gemi;//gemi olusturmak icin bir SDL_Rect ile gemi tanimliyoruz
 
+void ekraniBoya(SDL_Renderer* ekrancizici) // ekrani siyaha boyamayi ve temizleme isini fonksiyonla yaptik
+{
+	SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // bu fonksiyonla rengi ve þeffaflýgý belirliyoruz ilk parametre hangi rendererin iþ yaptýgý.
+	SDL_RenderClear(ekrancizici);//burda ise hepsini boyuyoruz
+}
+
 void gemiOlustur() //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki karmasayi azaltiyoruz
 	{
 	uzayGemisi = IMG_LoadTexture(ekrancizici, "gemi.png");//fotografimizi burda png olarak aliyoruz ilk parametre yine islemi kimin yapicagi
@@ -155,7 +161,7 @@ mermikutusu.h = 16;
 			mermiler[i].x += sin(mermiRadyan) * mermiHizi; // merminin yeni konumlarini giriyoruz ayni mantik ile
 			mermiler[i].y -= cos(mermiRadyan) * mermiHizi;
 
-			if (mermiler[i].x < 0 || mermiler[i].x > 800 || mermiler[i].y < 0 || mermiler[i].y > 600) { // eger mermi ekrandan ciktiysa
+			if (mermiler[i].x < 0 || mermiler[i].x > pencereGenisligi || mermiler[i].y < 0 || mermiler[i].y > pencereUzunlugu) { // eger mermi ekrandan ciktiysa
 				mermiler[i].canli = false; // o mermiyi ölü yap
 			}
 			mermikutusu.x = (int)mermiler[i].x; //merminin o andaki konumu
@@ -220,8 +226,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		gemi.x = (int)yeniGemix; // en son bir int göndermemiz gerektigi icin bu degerleri tekrar gemi.x ve y ye atýyoruz
 		gemi.y = (int)yeniGemiy; 
 
-		SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // bu fonksiyonla rengi ve þeffaflýgý belirliyoruz ilk parametre hangi rendererin iþ yaptýgý.
-		SDL_RenderClear(ekrancizici);//burda ise hepsini boyuyoruz
+		ekraniBoya(ekrancizici); //cagiriyoruz
 		gemiCiz(ekrancizici, uzayGemisi, &gemi, gemiAcisi); //cagiriyoruz
 		mermiCiz(mermiler, maxMermi, ekrancizici, mermi); //cagiriyoruz
 		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.
