@@ -60,21 +60,21 @@ void gemiCiz(SDL_Renderer* ekrancizici, SDL_Texture* uzayGemi, SDL_Rect* gemikut
 
 void gemiyiHareketEttir(const Uint8* tus, double* aci, double* yenix, double* yeniy, double hiz) // gemi hareketini fonksiyonla yapiyoruz degistirmek istediklerimizi pointer ile sabit kalmasini istediklerimizin degerini alýyoruz
 {
-	if (tus[SDL_SCANCODE_D])//sdlscancode ile tus kontrolleri yapýyoruz
+	if (tus[SDL_SCANCODE_D] | tus[SDL_SCANCODE_RIGHT])//sdlscancode ile tus kontrolleri yapýyoruz
 	{
 		*aci += 2.50;//aciyi degistiriyoruz
 	}
-	if (tus[SDL_SCANCODE_A])
+	if (tus[SDL_SCANCODE_A] | tus[SDL_SCANCODE_LEFT])
 	{
 		*aci -= 2.50;
 	}
 	double radyan = *aci * (PI / 180.0); // degisen aciya göre radyanýmýz degisicek
-	if (tus[SDL_SCANCODE_W])
+	if (tus[SDL_SCANCODE_W] | tus[SDL_SCANCODE_UP])
 	{
 		*yenix += sin(radyan) * hiz;  // gemimizin yeni konumunu sin ve cos fonkisyonlari ile tüm yönlere dagýtýyoruz x in sin olma sebebi 0 derecenin kuzeye bakmasi
 		*yeniy -= cos(radyan) * hiz;
 	}
-	if (tus[SDL_SCANCODE_S])
+	if (tus[SDL_SCANCODE_S] | tus[SDL_SCANCODE_DOWN])
 	{
 		*yenix -= sin(radyan) * hiz;
 		*yeniy += cos(radyan) * hiz;
