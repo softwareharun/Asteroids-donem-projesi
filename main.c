@@ -5,6 +5,8 @@
 #include <math.h> //sin ve cos fonkisyonlarýný eklemek icin
 
 #define PI 3.14159265 // pi yi tanýmlýyoruz
+#define maxMermi 20 // degistirmicegimiz icin burada tanimladim
+
 
 SDL_Window* pencere = NULL; //penceremizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
 SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
@@ -13,6 +15,8 @@ SDL_Texture* mermi = NULL; //mermi olusturuyoruz
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
 const int pencereGenisligi = 800;
+
+const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
 
 bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyoruz mainin icindeki karmasa azalýyor
 {
@@ -39,71 +43,104 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	return true;
 }
 
-SDL_Rect gemi;//gemi olusturmak icin bir SDL_Rect ile gemi tanimliyoruz
 
-void ekraniBoya(SDL_Renderer* ekrancizici) // ekrani siyaha boyamayi ve temizleme isini fonksiyonla yaptik
+void ekraniBoya() // ekrani siyaha boyamayi ve temizleme isini fonksiyonla yaptik
 {
 	SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // bu fonksiyonla rengi ve þeffaflýgý belirliyoruz ilk parametre hangi rendererin iþ yaptýgý.
 	SDL_RenderClear(ekrancizici);//burda ise hepsini boyuyoruz
 }
 
-void gemiOlustur() //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki karmasayi azaltiyoruz
+typedef struct {
+	double x; // eski gemiX ve Y miz bu konumu tutcak
+	double y;
+	double hizX; // ivmelenme icin hizX ve y tanýmladim
+	double hizY;
+	double aci; // eski gemiAci miz
+	int atisSuresi; //eski atisSuremiz
+    SDL_Rect kutu;// SDL_Rect gemi olan ve geminin baslangýc konumunu belirten structu buraya aldim kutu ile degistirdim
+} Gemi;
+
+const double itisHizi = 0.10; // ilk basta yaparken mainde olan ve sabit oldugu icin degismicek olan hýzýmýzý depolicak olan degisken
+void gemiOlustur(Gemi* gemi) //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki karmasayi azaltiyoruz
 	{
 	uzayGemisi = IMG_LoadTexture(ekrancizici, "gemi.png");//fotografimizi burda png olarak aliyoruz ilk parametre yine islemi kimin yapicagi
 	if (uzayGemisi == NULL) {
 		printf("gemi yuklenemedi Hata : %s\n", IMG_GetError());
 		}
-	gemi.w = 64;//geminin enini boyunu ve yerini belirliyoruz
-	gemi.h = 64;
-	gemi.x = (pencereGenisligi/2) - (gemi.w/2);
-	gemi.y = (pencereUzunlugu/2) - (gemi.h/2);
+	gemi->kutu.w = 64;//geminin enini boyunu ve yerini belirliyoruz
+	gemi->kutu.h = 64;
+	gemi->x = (pencereGenisligi / 2.0) - (gemi->kutu.w / 2.0); // geminin degiskenlerini struct yapisina adigim icin artik tüm fonksiyonlarda gemi-> þeklinde tanimliyoruz nokta yerine ok kullanma sebebimiz ise fonksiyonlara bir kutu degil adres gönderdigimiz icin
+	gemi->y = (pencereUzunlugu / 2.0) - (gemi->kutu.h / 2.0);
+
+	gemi->hizX = 0.00;
+	gemi->hizY = 0.00;
+	gemi->aci = 0.00;
+	gemi->atisSuresi = 0;
+
+	gemi->kutu.x = (int)gemi->x;
+	gemi->kutu.y = (int)gemi->y;
 	}
 
-void gemiCiz(SDL_Renderer* ekrancizici, SDL_Texture* uzayGemi, SDL_Rect* gemikutu, double aci) //gemi cizmeyi de fonksiyonla yapiyoruz
+void gemiCiz(Gemi* gemi) //gemi cizmeyi de fonksiyonla yapiyoruz
 {
-	SDL_RenderCopyEx(ekrancizici, uzayGemi, NULL, gemikutu, aci, NULL, SDL_FLIP_NONE); // sdlrendercopy ile sadece gemimizi getiriyoruz. ilk parametremiz çizim iþini hangi rendererin yaptýgýný ikinci parametre neyi getirdiðini üçüncüsü fotografin ne kadarini göstercegi null yaparak hepsini seciyoruz sonuncusu ise nereye ve hangi boyutta oldugu. 
+	SDL_RenderCopyEx(ekrancizici, uzayGemisi, NULL, &(gemi->kutu), gemi->aci, NULL, SDL_FLIP_NONE); // sdlrendercopy ile sadece gemimizi getiriyoruz. ilk parametremiz çizim iþini hangi rendererin yaptýgýný ikinci parametre neyi getirdiðini üçüncüsü fotografin ne kadarini göstercegi null yaparak hepsini seciyoruz sonuncusu ise nereye ve hangi boyutta oldugu. 
 }
 
-void gemiyiHareketEttir(const Uint8* tus, double* aci, double* yenix, double* yeniy, double hiz) // gemi hareketini fonksiyonla yapiyoruz degistirmek istediklerimizi pointer ile sabit kalmasini istediklerimizin degerini alýyoruz
+void gemiyiHareketEttir(Gemi* gemi) // gemi hareketini fonksiyonla yapiyoruz degistirmek istediklerimizi pointer ile sabit kalmasini istediklerimizin degerini alýyoruz
 {
-	if (tus[SDL_SCANCODE_D] | tus[SDL_SCANCODE_RIGHT])//sdlscancode ile tus kontrolleri yapýyoruz
+	if (tuslar[SDL_SCANCODE_D] | tuslar[SDL_SCANCODE_RIGHT])//sdlscancode ile tus kontrolleri yapýyoruz
 	{
-		*aci += 2.50;//aciyi degistiriyoruz
+		gemi->aci += 2.50;//aciyi degistiriyoruz
 	}
-	if (tus[SDL_SCANCODE_A] | tus[SDL_SCANCODE_LEFT])
+	if (tuslar[SDL_SCANCODE_A] | tuslar[SDL_SCANCODE_LEFT])
 	{
-		*aci -= 2.50;
+		gemi->aci -= 2.50;
 	}
-	double radyan = *aci * (PI / 180.0); // degisen aciya göre radyanýmýz degisicek
-	if (tus[SDL_SCANCODE_W] | tus[SDL_SCANCODE_UP])
+	double radyan = gemi->aci * (PI / 180.0); // degisen aciya göre radyanýmýz degisicek
+	if (tuslar[SDL_SCANCODE_W] | tuslar[SDL_SCANCODE_UP])
 	{
-		*yenix += sin(radyan) * hiz;  // gemimizin yeni konumunu sin ve cos fonkisyonlari ile tüm yönlere dagýtýyoruz x in sin olma sebebi 0 derecenin kuzeye bakmasi
-		*yeniy -= cos(radyan) * hiz;
+		gemi->hizX += sin(radyan) * itisHizi;  // gemimizin yeni konumunu sin ve cos fonkisyonlari ile tüm yönlere dagýtýyoruz x in sin olma sebebi 0 derecenin kuzeye bakmasi
+		gemi->hizY -= cos(radyan) * itisHizi;
 	}
-	if (tus[SDL_SCANCODE_S] | tus[SDL_SCANCODE_DOWN])
+
+	gemi->x += gemi->hizX;
+	gemi->y += gemi->hizY;
+	
+	if (tuslar[SDL_SCANCODE_S] | tuslar[SDL_SCANCODE_DOWN]) // hareket mekaniðini degistirdigim icin geri giderken cok yavas gidiyordu geri gitmeyi de ileri gitme gibi yaptim
 	{
-		*yenix -= sin(radyan) * hiz;
-		*yeniy += cos(radyan) * hiz;
+		gemi->hizX -= sin(radyan) * itisHizi;
+		gemi->hizY += cos(radyan) * itisHizi;
+
 	}
+	if (tuslar[SDL_SCANCODE_LSHIFT]) // ek olarak fren ekledim oldugu yerde kalabilmesi icin
+	{
+		gemi->hizX *= 0.95;
+		gemi->hizY *= 0.95;
+	}
+	gemi->hizX *= 0.99;
+	gemi->hizY *= 0.99;
+
+	gemi->kutu.x = (int)gemi->x;
+	gemi->kutu.y = (int)gemi->y;
 }
 
-void gemiyiPenceredeTut(double* yenix, double* yeniy) //gemiyi pencerede tutmak icin 
+void gemiyiPenceredeTut(Gemi* gemi) //gemiyi pencerede tutmak icin 
 {
-	if (*yenix < 0) //eger ekranin solundan cikarsa
+	if (gemi->x < 0) //eger ekranin solundan cikarsa
 	{
-		*yenix = pencereGenisligi; //sagdan gelsin
+		gemi->x = pencereGenisligi; //sagdan gelsin
 	}
-	if (*yenix > pencereGenisligi) // sagdan
+	if (gemi->x > pencereGenisligi) // sagdan
 	{
-		*yenix = 0; // sola isinla
+		gemi->x = 0; // sola isinla
 	}
-	if (*yeniy < 0) // yukardan
+	if (gemi->y < 0) // yukardan
 	{
-		*yeniy = pencereUzunlugu; // asagi
+		gemi->y = pencereUzunlugu; // asagi
 	}
-	if (*yeniy > pencereUzunlugu) // asagidan
+	if (gemi->y > pencereUzunlugu) // asagidan
 	{
-		*yeniy = 0; //yukari
+		gemi->y = 0; //yukari
 	}
 }
 
@@ -124,34 +161,34 @@ void mermiOlustur(Mermi mermiler[], int max) // burda mermimizi olusturuyoruz ol
 
 }
 
-void mermiAtesle(const Uint8* tus, Mermi mermiler[], int max, int* atisSuresi, double gemiX, double gemiY, double gemiAci) // mermimizi ateslemek icin mainden basilcak tus mermi sayisi ve dizisi her mermi arasindaki bosluk ve geminin konumlarini aliyoruz
+void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin mainden basilcak tus mermi sayisi ve dizisi her mermi arasindaki bosluk ve geminin konumlarini aliyoruz
 {
-	if (*atisSuresi > 0)
+	if (gemi->atisSuresi > 0)
 	{
-		(*atisSuresi)--;
+		(gemi->atisSuresi)--;
 	}
-	if(tus[SDL_SCANCODE_SPACE] && *atisSuresi==0) // eger space ye basildiysa ve aradan atis süresi kadar kare gectiyse
+	if(tuslar[SDL_SCANCODE_SPACE] && gemi->atisSuresi==0) // eger space ye basildiysa ve aradan atis süresi kadar kare gectiyse
 	{ 
-	for(int i = 0; i < max; i++)
+	for(int i = 0; i < maxMermi; i++)
 		{
 		if (mermiler[i].canli == false) // siradaki atilmaya hazir ise 
 			{
-		mermiler[i].x = gemiX + 32; // konumlari giriyoruz
-		mermiler[i].y = gemiY + 32;
-		mermiler[i].aci = gemiAci; // geminin baktigi yönle esitliyoruz
+		mermiler[i].x = gemi->x + 32; // konumlari giriyoruz
+		mermiler[i].y = gemi->y + 32;
+		mermiler[i].aci = gemi->aci; // geminin baktigi yönle esitliyoruz
 		mermiler[i].canli = true; // o sýradaki mermiyi 1 yaparak atesliyoruz
-		*atisSuresi = 20;
+		gemi->atisSuresi = 20;
 		break;
 			}
 		}
 	}
 }
 
-void mermiCiz(Mermi mermiler[], int max, SDL_Renderer* ekrancizici, SDL_Texture* mermi) // mermiyi ekrana cizdirmek icin mermileri tutan diziyi rendererimizi ve mermi texturemizi aliyoruz 
+void mermiCiz(Mermi mermiler[]) // mermiyi ekrana cizdirmek icin mermileri tutan diziyi rendererimizi ve mermi texturemizi aliyoruz 
 {
 mermikutusu.w = 16; //mermi boyutlari
 mermikutusu.h = 16;
-	for (int i = 0; i < max; i++) 
+	for (int i = 0; i < maxMermi; i++) 
 	{
 		if (mermiler[i].canli) // eger mermi ekranda ise
 		{
@@ -190,21 +227,12 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			printf("Pencere veya dosya acilamadi.. Hata%s\n", SDL_GetError());
 	
 		}
-		//--------------GEMÝ--------------//
-	gemiOlustur(); //gemiyi cagiriyoruz
-	double yeniGemix = gemi.x; //geminin yeni koordinatliarini double ile tutmak icin
-	double yeniGemiy = gemi.y;
-	double gemiAcisi = 0.00; // aci degiskeni tanimliyoruz
-	double gemiHizi = 3.00; //burda hizi belirliyoruz
-		//-------------GEMÝ--------------//
-		//------------MERMÝ--------------//
+
+	tuslar = SDL_GetKeyboardState(NULL); // burada tus kontrolu yapicaz sadece evet ve hayýr döndürdüðü icin 8 bit yeterli
+	Gemi gemi; // yukarda acitigimiz stuctu fonksiyonlara gondermek icin degisken atiyoruz
+	gemiOlustur(&gemi); //gemiyi cagiriyoruz
 	Mermi mermiler[20]; //mermilerimizi tutmasi icin dizi olusturuyoruz
-	int atisSuresi = 0; // ilk mermimizin hazir olmasi icin 0 baslatiyoruz
-	int maxMermi = 20; //ekranda bulunabilcek max mermi
 	mermiOlustur(mermiler, 20); // mermiyi olusturma fonksiyonunu cagiriyoruz
-		//-------------MERMÝ------------//
-	
-	const Uint8* tuslar = SDL_GetKeyboardState(NULL); // burada tus kontrolu yapicaz sadece evet ve hayýr döndürdüðü icin 8 bit yeterli
 	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 	SDL_Event olay; //basýlan tuslari tutmamiz icin
 		
@@ -220,15 +248,12 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			
 		}
 
-		gemiyiHareketEttir(tuslar, &gemiAcisi, &yeniGemix, &yeniGemiy, gemiHizi);// cagiriyoruz
-		gemiyiPenceredeTut(&yeniGemix, &yeniGemiy); // cagiriyoruz
-		mermiAtesle(tuslar, mermiler, maxMermi, &atisSuresi, yeniGemix, yeniGemiy, gemiAcisi);
-		gemi.x = (int)yeniGemix; // en son bir int göndermemiz gerektigi icin bu degerleri tekrar gemi.x ve y ye atýyoruz
-		gemi.y = (int)yeniGemiy; 
-
-		ekraniBoya(ekrancizici); //cagiriyoruz
-		gemiCiz(ekrancizici, uzayGemisi, &gemi, gemiAcisi); //cagiriyoruz
-		mermiCiz(mermiler, maxMermi, ekrancizici, mermi); //cagiriyoruz
+		gemiyiHareketEttir(&gemi);// cagiriyoruz
+		gemiyiPenceredeTut(&gemi); // cagiriyoruz
+		mermiAtesle(mermiler, &gemi);//cagiriyoruz
+		ekraniBoya(); //cagiriyoruz
+		gemiCiz(&gemi); //cagiriyoruz
+		mermiCiz(mermiler); //cagiriyoruz
 		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.
 	}
 	
