@@ -73,15 +73,15 @@ void gemiOlustur(Gemi* gemi) //gemiyi olusturmayi fonkiyonla yapiyoruz mainin ic
 	if (uzayGemisi == NULL) {
 		printf("gemi yuklenemedi Hata : %s\n", IMG_GetError());
 		}
-	gemiKutusu.w = 55;//geminin enini boyunu ve yerini belirliyoruz
-	gemiKutusu.h = 55;
+	gemiKutusu.w = 56;//geminin enini boyunu ve yerini belirliyoruz
+	gemiKutusu.h = 56;
 	gemi->x = (pencereGenisligi / 2.0) - (gemiKutusu.w / 2.0); // geminin degiskenlerini struct yapisina adigim icin artik tüm fonksiyonlarda gemi-> þeklinde tanimliyoruz nokta yerine ok kullanma sebebimiz ise fonksiyonlara bir kutu degil adres gönderdigimiz icin
 	gemi->y = (pencereUzunlugu / 2.0) - (gemiKutusu.h / 2.0);
 
 	gemi->hizX = 0.00;
 	gemi->hizY = 0.00;
 	gemi->aci = 0.00;
-	gemi->atisSuresi = 0;
+	gemi->atisSuresi = 15;
 
 	gemiKutusu.x = (int)gemi->x;
 	gemiKutusu.y = (int)gemi->y;
@@ -150,11 +150,11 @@ void gemiyiPenceredeTut(Gemi* gemi) //gemiyi pencerede tutmak icin
 	}
 }
 
-SDL_Rect mermikutusu; //mermimizin konumunu ve boyutlarini tutcak
 
 typedef struct { // mermimizin konumlari icin x y acisi icin aci ve merminin hayatta oldugnu kontrol etmek icin canli bulunduran bir struct olusturuyoruz
 	double x, y, aci;
 	bool canli;
+	SDL_Rect mermikutusu; //mermimizin konumunu ve boyutlarini tutcak
 }Mermi;
 
  const double mermiHizi = 5.00; // hizi belirliyoruz
@@ -170,7 +170,7 @@ void mermiOlustur(Mermi mermiler[]) // burda mermimizi olusturuyoruz olusan merm
 
 void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin mainden basilcak tus mermi sayisi ve dizisi her mermi arasindaki bosluk ve geminin konumlarini aliyoruz
 {
-	if (gemi->atisSuresi > 0)
+	if (gemi->atisSuresi > 0) // eger atis süresi kadar kare gecmediyse
 	{
 		(gemi->atisSuresi)--;
 	}
@@ -180,11 +180,15 @@ void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin maind
 		{
 		if (mermiler[i].canli == false) // siradaki atilmaya hazir ise 
 			{
-		mermiler[i].x = gemi->x + 32; // konumlari giriyoruz
-		mermiler[i].y = gemi->y + 32;
+		mermiler[i].x = gemi->x + 28; // konumlari giriyoruz
+		mermiler[i].y = gemi->y + 28;
 		mermiler[i].aci = gemi->aci; // geminin baktigi yönle esitliyoruz
 		mermiler[i].canli = true; // o sýradaki mermiyi 1 yaparak atesliyoruz
 		gemi->atisSuresi = 20;
+		mermiler[i].mermikutusu.x = (int)mermiler[i].x; //baska fonksiyonu beklemeden burada mermiyi geminin ucunda baslatiyoruz ve artik mermi meteora carptikdan sonra o konumda kalmasini engelliyoruz
+		mermiler[i].mermikutusu.y = (int)mermiler[i].y;
+		mermiler[i].mermikutusu.w = 16; //mermi boyutlari
+		mermiler[i].mermikutusu.h = 16;
 		break;
 			}
 		}
@@ -193,10 +197,10 @@ void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin maind
 
 void mermiCiz(Mermi mermiler[]) // mermiyi ekrana cizdirmek icin mermileri tutan diziyi rendererimizi ve mermi texturemizi aliyoruz 
 {
-mermikutusu.w = 16; //mermi boyutlari
-mermikutusu.h = 16;
 	for (int i = 0; i < maxMermi; i++) 
 	{
+	mermiler[i].mermikutusu.w = 16; //mermi boyutlari
+	mermiler[i].mermikutusu.h = 16;
 		if (mermiler[i].canli) // eger mermi ekranda ise
 		{
 			double mermiRadyan = mermiler[i].aci * (PI / 180.0); // burada yönleri dagitiyoruz
@@ -207,10 +211,10 @@ mermikutusu.h = 16;
 			if (mermiler[i].x < 0 || mermiler[i].x > pencereGenisligi || mermiler[i].y < 0 || mermiler[i].y > pencereUzunlugu) { // eger mermi ekrandan ciktiysa
 				mermiler[i].canli = false; // o mermiyi ölü yap
 			}
-			mermikutusu.x = (int)mermiler[i].x; //merminin o andaki konumu
-			mermikutusu.y = (int)mermiler[i].y;
+			mermiler[i].mermikutusu.x = (int)mermiler[i].x; //merminin o andaki konumu
+			mermiler[i].mermikutusu.y = (int)mermiler[i].y;
 			
-			SDL_RenderCopyEx(ekrancizici, mermi, NULL, &mermikutusu, mermiler[i].aci, NULL, SDL_FLIP_NONE); // mermimizi nereye getircegimizi kimin getirecegini ve aynalama yapip yapmayacagimizi aliyoruz
+			SDL_RenderCopyEx(ekrancizici, mermi, NULL, &(mermiler[i].mermikutusu), mermiler[i].aci, NULL, SDL_FLIP_NONE); // mermimizi nereye getircegimizi kimin getirecegini ve aynalama yapip yapmayacagimizi aliyoruz
 		}
 	}
 }
@@ -359,7 +363,30 @@ void meteorlariCiz(Meteor meteorlar[]) // ekrana cizme
 				basilacakResim = planet3;
 			}
 
-			SDL_RenderCopyEx(ekrancizici, basilacakResim, NULL, &meteorlar[i].meteorKutusu, meteorlar[i].aci, NULL, SDL_FLIP_NONE);
+			SDL_RenderCopyEx(ekrancizici, basilacakResim, NULL, &meteorlar[i].meteorKutusu, meteorlar[i].aci, NULL, SDL_FLIP_NONE); // meteorun hangi resimle cizilecegini belirliyoruz ve ciziyoruz
+		}
+	}
+}
+
+void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu kontrol ediyoruz eger mermi ve meteorun kutulari kesisiyorsa her ikisini de ölü yaparak ekrandan kaybolmalarini sagliyoruz
+{
+	for (int i = 0; i < maxMermi; i++)
+	{
+		if (mermiler[i].canli == true)
+		{
+			for (int j = 0; j < maxMeteor; j++)
+			{
+				if (meteorlar[j].canli == true)
+				{
+					if (SDL_HasIntersection(&mermiler[i].mermikutusu, &meteorlar[j].meteorKutusu))
+					{
+						mermiler[i].canli = false;
+						meteorlar[j].canli = false;
+
+						break;
+					}
+				}
+			}
 		}
 	}
 }
@@ -410,6 +437,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		mermiAtesle(mermiler, &gemi);//cagiriyoruz
 		meteorlariFirlat(meteorlar);//cagiriyoruz
 		meteorlariHareketEttir(meteorlar);//cagiriyoruz
+		meteorVurma(mermiler, meteorlar);//cagiriyoruz
 		ekraniBoya(); //cagiriyoruz
 		gemiCiz(&gemi); //cagiriyoruz
 		mermiCiz(mermiler); //cagiriyoruz
