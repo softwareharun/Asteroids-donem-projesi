@@ -6,12 +6,18 @@
 
 #define PI 3.14159265 // pi yi tanýmlýyoruz
 #define maxMermi 20 // degistirmicegimiz icin burada tanimladim
-
+#define maxMeteor 10 // ekranda olacak max meteor
 
 SDL_Window* pencere = NULL; //penceremizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
 SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
 SDL_Texture* uzayGemisi = NULL;//texture de renderer gibi ekran karti kullanir ve daha hizlidir saydam halde getirebilmek ve fotografi döndürebilmek icin kullaniyoruz
 SDL_Texture* mermi = NULL; //mermi olusturuyoruz
+SDL_Texture* meteor1 = NULL;
+SDL_Texture* meteor2 = NULL;
+SDL_Texture* meteor3 = NULL;
+SDL_Texture* planet1 = NULL;
+SDL_Texture* planet2 = NULL;
+SDL_Texture* planet3 = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
 const int pencereGenisligi = 800;
@@ -49,6 +55,7 @@ void ekraniBoya() // ekrani siyaha boyamayi ve temizleme isini fonksiyonla yapti
 	SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // bu fonksiyonla rengi ve þeffaflýgý belirliyoruz ilk parametre hangi rendererin iþ yaptýgý.
 	SDL_RenderClear(ekrancizici);//burda ise hepsini boyuyoruz
 }
+    SDL_Rect gemiKutusu;// SDL_Rect gemi olan ve geminin baslangýc konumunu belirten structu buraya aldim kutu ile degistirdim
 
 typedef struct {
 	double x; // eski gemiX ve Y miz bu konumu tutcak
@@ -57,33 +64,32 @@ typedef struct {
 	double hizY;
 	double aci; // eski gemiAci miz
 	int atisSuresi; //eski atisSuremiz
-    SDL_Rect kutu;// SDL_Rect gemi olan ve geminin baslangýc konumunu belirten structu buraya aldim kutu ile degistirdim
 } Gemi;
 
 const double itisHizi = 0.10; // ilk basta yaparken mainde olan ve sabit oldugu icin degismicek olan hýzýmýzý depolicak olan degisken
 void gemiOlustur(Gemi* gemi) //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki karmasayi azaltiyoruz
 	{
-	uzayGemisi = IMG_LoadTexture(ekrancizici, "gemi.png");//fotografimizi burda png olarak aliyoruz ilk parametre yine islemi kimin yapicagi
+	uzayGemisi = IMG_LoadTexture(ekrancizici, "gemi.png");//fotografimizi burda png olarak aliyoruz ilk parametre yine islemi kimin yapicagi img load ile almamýz ise bu sekilde ekrana basilmaya hazir png olarak vermesi
 	if (uzayGemisi == NULL) {
 		printf("gemi yuklenemedi Hata : %s\n", IMG_GetError());
 		}
-	gemi->kutu.w = 64;//geminin enini boyunu ve yerini belirliyoruz
-	gemi->kutu.h = 64;
-	gemi->x = (pencereGenisligi / 2.0) - (gemi->kutu.w / 2.0); // geminin degiskenlerini struct yapisina adigim icin artik tüm fonksiyonlarda gemi-> þeklinde tanimliyoruz nokta yerine ok kullanma sebebimiz ise fonksiyonlara bir kutu degil adres gönderdigimiz icin
-	gemi->y = (pencereUzunlugu / 2.0) - (gemi->kutu.h / 2.0);
+	gemiKutusu.w = 55;//geminin enini boyunu ve yerini belirliyoruz
+	gemiKutusu.h = 55;
+	gemi->x = (pencereGenisligi / 2.0) - (gemiKutusu.w / 2.0); // geminin degiskenlerini struct yapisina adigim icin artik tüm fonksiyonlarda gemi-> þeklinde tanimliyoruz nokta yerine ok kullanma sebebimiz ise fonksiyonlara bir kutu degil adres gönderdigimiz icin
+	gemi->y = (pencereUzunlugu / 2.0) - (gemiKutusu.h / 2.0);
 
 	gemi->hizX = 0.00;
 	gemi->hizY = 0.00;
 	gemi->aci = 0.00;
 	gemi->atisSuresi = 0;
 
-	gemi->kutu.x = (int)gemi->x;
-	gemi->kutu.y = (int)gemi->y;
+	gemiKutusu.x = (int)gemi->x;
+	gemiKutusu.y = (int)gemi->y;
 	}
 
 void gemiCiz(Gemi* gemi) //gemi cizmeyi de fonksiyonla yapiyoruz
 {
-	SDL_RenderCopyEx(ekrancizici, uzayGemisi, NULL, &(gemi->kutu), gemi->aci, NULL, SDL_FLIP_NONE); // sdlrendercopy ile sadece gemimizi getiriyoruz. ilk parametremiz çizim iþini hangi rendererin yaptýgýný ikinci parametre neyi getirdiðini üçüncüsü fotografin ne kadarini göstercegi null yaparak hepsini seciyoruz sonuncusu ise nereye ve hangi boyutta oldugu. 
+	SDL_RenderCopyEx(ekrancizici, uzayGemisi, NULL, &gemiKutusu, gemi->aci, NULL, SDL_FLIP_NONE); // sdlrendercopy ile sadece gemimizi getiriyoruz. ilk parametremiz çizim iþini hangi rendererin yaptýgýný ikinci parametre neyi getirdiðini üçüncüsü fotografin ne kadarini göstercegi null yaparak hepsini seciyoruz sonuncusu ise nereye ve hangi boyutta oldugu. 
 }
 
 void gemiyiHareketEttir(Gemi* gemi) // gemi hareketini fonksiyonla yapiyoruz degistirmek istediklerimizi pointer ile sabit kalmasini istediklerimizin degerini alýyoruz
@@ -108,8 +114,8 @@ void gemiyiHareketEttir(Gemi* gemi) // gemi hareketini fonksiyonla yapiyoruz deg
 	
 	if (tuslar[SDL_SCANCODE_S] | tuslar[SDL_SCANCODE_DOWN]) // hareket mekaniðini degistirdigim icin geri giderken cok yavas gidiyordu geri gitmeyi de ileri gitme gibi yaptim
 	{
-		gemi->hizX -= sin(radyan) * itisHizi;
-		gemi->hizY += cos(radyan) * itisHizi;
+		gemi->hizX -= sin(radyan) * itisHizi/2;
+		gemi->hizY += cos(radyan) * itisHizi/2;
 
 	}
 	if (tuslar[SDL_SCANCODE_LSHIFT]) // ek olarak fren ekledim oldugu yerde kalabilmesi icin
@@ -120,8 +126,8 @@ void gemiyiHareketEttir(Gemi* gemi) // gemi hareketini fonksiyonla yapiyoruz deg
 	gemi->hizX *= 0.99;
 	gemi->hizY *= 0.99;
 
-	gemi->kutu.x = (int)gemi->x;
-	gemi->kutu.y = (int)gemi->y;
+	gemiKutusu.x = (int)gemi->x;
+	gemiKutusu.y = (int)gemi->y;
 }
 
 void gemiyiPenceredeTut(Gemi* gemi) //gemiyi pencerede tutmak icin 
@@ -151,10 +157,11 @@ typedef struct { // mermimizin konumlari icin x y acisi icin aci ve merminin hay
 	bool canli;
 }Mermi;
 
-void mermiOlustur(Mermi mermiler[], int max) // burda mermimizi olusturuyoruz olusan mermilerin durumlarini false yaparak baska bir deger atanmasýný engelliyoruz
+ const double mermiHizi = 5.00; // hizi belirliyoruz
+void mermiOlustur(Mermi mermiler[]) // burda mermimizi olusturuyoruz olusan mermilerin durumlarini false yaparak baska bir deger atanmasýný engelliyoruz
 {
 	mermi = IMG_LoadTexture(ekrancizici, "mermi.png");
-	for (int i = 0; i < max; i++)
+	for (int i = 0; i < maxMermi; i++)
 	{
 		mermiler[i].canli = false;
 	}
@@ -193,7 +200,6 @@ mermikutusu.h = 16;
 		if (mermiler[i].canli) // eger mermi ekranda ise
 		{
 			double mermiRadyan = mermiler[i].aci * (PI / 180.0); // burada yönleri dagitiyoruz
-			double mermiHizi = 3.00; // hizi belirliyoruz
 
 			mermiler[i].x += sin(mermiRadyan) * mermiHizi; // merminin yeni konumlarini giriyoruz ayni mantik ile
 			mermiler[i].y -= cos(mermiRadyan) * mermiHizi;
@@ -205,6 +211,155 @@ mermikutusu.h = 16;
 			mermikutusu.y = (int)mermiler[i].y;
 			
 			SDL_RenderCopyEx(ekrancizici, mermi, NULL, &mermikutusu, mermiler[i].aci, NULL, SDL_FLIP_NONE); // mermimizi nereye getircegimizi kimin getirecegini ve aynalama yapip yapmayacagimizi aliyoruz
+		}
+	}
+}
+
+typedef struct { //meteorumuzun konumunu hizini acisini durumunu tutucak
+	double x;
+	double y;
+	double hizX;
+	double hizY;
+	double aci;
+	double donmeHizi;
+	bool canli;
+	int cesit;
+	SDL_Rect meteorKutusu;
+
+}Meteor;
+
+void meteorOlustur(Meteor meteorlar[]) // meteorlari olusturuyoruz
+{
+	meteor1 = IMG_LoadTexture(ekrancizici, "meteor.png");
+	meteor2 = IMG_LoadTexture(ekrancizici, "meteor2.png");
+	meteor3 = IMG_LoadTexture(ekrancizici, "meteor3.png");
+	planet1 = IMG_LoadTexture(ekrancizici, "dunya.png");
+	planet2 = IMG_LoadTexture(ekrancizici, "saturn.png");
+	planet3 = IMG_LoadTexture(ekrancizici, "uranus.png");
+
+	for (int i = 0; i < maxMeteor; i++)
+	{
+		meteorlar[i].canli = false;
+	}
+
+}
+
+void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz ve kenardan ortaya yonelmesini sagliyoruz
+{
+	double hedefX = pencereGenisligi / 2.0; //en ortayi hedefliyoruz
+	double hedefY = pencereUzunlugu / 2.0;
+	if (rand() % 30 == 0) // hepsi bir anda olusmamasi icin
+	{
+		for (int i = 0; i < maxMeteor; i++)
+		{
+			if (meteorlar[i].canli == false)
+			{
+				meteorlar[i].cesit = rand() % 6;
+
+				if (meteorlar[i].cesit == 0 || meteorlar[i].cesit == 3) // hangi textureleriin hangi boyutta olcagi
+				{
+					meteorlar[i].meteorKutusu.w = 64;
+					meteorlar[i].meteorKutusu.h = 64;
+				}
+				if (meteorlar[i].cesit == 1 || meteorlar[i].cesit == 4)
+				{
+					meteorlar[i].meteorKutusu.w = 80;
+					meteorlar[i].meteorKutusu.h = 80;
+				}
+				if (meteorlar[i].cesit == 2 || meteorlar[i].cesit == 5)
+				{
+					meteorlar[i].meteorKutusu.w = 96;
+					meteorlar[i].meteorKutusu.h = 96;
+				}
+				int kenar = rand() % 4; // kenardan olusmasi icin
+
+				if (kenar == 0) { 
+					meteorlar[i].x = rand() % pencereGenisligi;
+					meteorlar[i].y = 0;
+				}
+				if (kenar == 1) { 
+					meteorlar[i].x = rand() % pencereGenisligi;
+					meteorlar[i].y = pencereUzunlugu;
+				}
+				if (kenar == 2) { 
+					meteorlar[i].x = 0;
+					meteorlar[i].y = rand() % pencereUzunlugu;
+				}
+				if(kenar == 3) { 
+					meteorlar[i].x = pencereGenisligi;
+					meteorlar[i].y = rand() % pencereUzunlugu;
+				}
+				double gidilecekX = hedefX - meteorlar[i].x; //meteorun rotasi
+				double gidilecekY = hedefY - meteorlar[i].y;
+
+				meteorlar[i].hizX = gidilecekX / 300.0; // burada hizini belirliyoruz
+				meteorlar[i].hizY = gidilecekY / 300.0;
+
+				meteorlar[i].aci = 0;
+				meteorlar[i].donmeHizi = (rand() % 5) - 2.0; // donme hizini yapiyoruz
+				meteorlar[i].canli = true;
+
+				break; // döngüden cýkýyoruz
+			}
+
+		}
+	}
+}
+
+void meteorlariHareketEttir(Meteor meteorlar[]) // meteorlari hareket ettiriyoruz
+{
+	for (int i = 0; i < maxMeteor; i++)
+	{
+		if (meteorlar[i].canli)
+		{
+			meteorlar[i].x += meteorlar[i].hizX; // onceden belirledigimiz hiz ile yapiyoruz
+			meteorlar[i].y += meteorlar[i].hizY;
+			meteorlar[i].aci += meteorlar[i].donmeHizi;
+
+			meteorlar[i].meteorKutusu.x = (int)meteorlar[i].x; // en son olarak konumu guncelliyoruz
+			meteorlar[i].meteorKutusu.y = (int)meteorlar[i].y;
+
+			if (meteorlar[i].x < 0 || meteorlar[i].x > pencereGenisligi  || meteorlar[i].y < 0 || meteorlar[i].y > pencereUzunlugu ) // ekrandan cikarsa ölsün
+			{
+				meteorlar[i].canli = false;
+			}
+		}
+	}
+}
+
+void meteorlariCiz(Meteor meteorlar[]) // ekrana cizme
+{
+	SDL_Texture* basilacakResim = NULL; 
+	for (int i = 0; i < maxMeteor; i++) 
+	{
+		if (meteorlar[i].canli)
+		{
+			if (meteorlar[i].cesit == 0) 
+			{
+				basilacakResim = meteor1;
+			}
+			if (meteorlar[i].cesit == 1) 
+			{
+				basilacakResim = meteor2;
+			}
+			if (meteorlar[i].cesit == 2) 
+			{
+				basilacakResim = meteor3;
+			}
+			if (meteorlar[i].cesit == 3) 
+			{
+				basilacakResim = planet1;
+			}
+			if (meteorlar[i].cesit == 4) 
+			{
+				basilacakResim = planet2;
+			}
+			if (meteorlar[i].cesit == 5) 
+			{
+				basilacakResim = planet3;
+			}
+
+			SDL_RenderCopyEx(ekrancizici, basilacakResim, NULL, &meteorlar[i].meteorKutusu, meteorlar[i].aci, NULL, SDL_FLIP_NONE);
 		}
 	}
 }
@@ -231,8 +386,10 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	tuslar = SDL_GetKeyboardState(NULL); // burada tus kontrolu yapicaz sadece evet ve hayýr döndürdüðü icin 8 bit yeterli
 	Gemi gemi; // yukarda acitigimiz stuctu fonksiyonlara gondermek icin degisken atiyoruz
 	gemiOlustur(&gemi); //gemiyi cagiriyoruz
-	Mermi mermiler[20]; //mermilerimizi tutmasi icin dizi olusturuyoruz
-	mermiOlustur(mermiler, 20); // mermiyi olusturma fonksiyonunu cagiriyoruz
+	Mermi mermiler[maxMermi]; //mermilerimizi tutmasi icin dizi olusturuyoruz
+	mermiOlustur(mermiler); // mermiyi olusturma fonksiyonunu cagiriyoruz
+	Meteor meteorlar[maxMeteor]; //dizi olusturuyoruz
+	meteorOlustur(meteorlar); // cagiriyoruz
 	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 	SDL_Event olay; //basýlan tuslari tutmamiz icin
 		
@@ -251,9 +408,12 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		gemiyiHareketEttir(&gemi);// cagiriyoruz
 		gemiyiPenceredeTut(&gemi); // cagiriyoruz
 		mermiAtesle(mermiler, &gemi);//cagiriyoruz
+		meteorlariFirlat(meteorlar);//cagiriyoruz
+		meteorlariHareketEttir(meteorlar);//cagiriyoruz
 		ekraniBoya(); //cagiriyoruz
 		gemiCiz(&gemi); //cagiriyoruz
 		mermiCiz(mermiler); //cagiriyoruz
+		meteorlariCiz(meteorlar);//cagiriyoruz
 		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.
 	}
 	
