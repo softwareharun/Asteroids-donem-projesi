@@ -12,7 +12,7 @@ set(SDL2_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/SDL2/lib/x64")
 include_directories(${SDL2_INCLUDE_DIR})
 
 # Çalýþtýrýlabilir dosyamýzý ve kaynak kodumuzu belirtiyoruz
-add_executable(${PROJECT_NAME} WIN32 main.c) #WIN32 yaparak uygulamayla birlikde cmd açýlmasýný engelledik
+add_executable(${PROJECT_NAME} WIN32 main.c "gemiVeMermi.h" "gemiVeMermi.c" "meteor.h" "meteor.c" "carpisma.h" "carpisma.c") #WIN32 yaparak uygulamayla birlikde cmd açýlmasýný engelledik
 
 # Kütüphane dosyalarýný baðlamasý için yolu gösteriyoruz
 target_link_directories(${PROJECT_NAME} PRIVATE ${SDL2_LIB_DIR})
