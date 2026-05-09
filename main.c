@@ -6,7 +6,7 @@
 
 #define PI 3.14159265 // pi yi tanýmlýyoruz
 #define maxMermi 20 // degistirmicegimiz icin burada tanimladim
-#define maxMeteor 10 // ekranda olacak max meteor
+#define maxMeteor 20 // ekranda olacak max meteor
 
 SDL_Window* pencere = NULL; //penceremizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
 SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
@@ -252,7 +252,7 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 {
 	double hedefX = pencereGenisligi / 2.0; //en ortayi hedefliyoruz
 	double hedefY = pencereUzunlugu / 2.0;
-	if (rand() % 30 == 0) // hepsi bir anda olusmamasi icin
+	if (rand() % 50 == 0) // hepsi bir anda olusmamasi icin
 	{
 		for (int i = 0; i < maxMeteor; i++)
 		{
@@ -260,20 +260,20 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 			{
 				meteorlar[i].cesit = rand() % 6;
 
-				if (meteorlar[i].cesit == 0 || meteorlar[i].cesit == 3) // hangi textureleriin hangi boyutta olcagi
+				if (meteorlar[i].cesit == 0 ) // hangi textureleriin hangi boyutta olcagi
 				{
-					meteorlar[i].meteorKutusu.w = 64;
-					meteorlar[i].meteorKutusu.h = 64;
+					meteorlar[i].meteorKutusu.w = 70;
+					meteorlar[i].meteorKutusu.h = 70;
 				}
-				if (meteorlar[i].cesit == 1 || meteorlar[i].cesit == 4)
+				if (meteorlar[i].cesit == 1 || meteorlar[i].cesit == 2)
 				{
-					meteorlar[i].meteorKutusu.w = 80;
-					meteorlar[i].meteorKutusu.h = 80;
+					meteorlar[i].meteorKutusu.w = 90;
+					meteorlar[i].meteorKutusu.h = 90;
 				}
-				if (meteorlar[i].cesit == 2 || meteorlar[i].cesit == 5)
+				if (meteorlar[i].cesit == 3 || meteorlar[i].cesit == 4 || meteorlar[i].cesit == 5)
 				{
-					meteorlar[i].meteorKutusu.w = 96;
-					meteorlar[i].meteorKutusu.h = 96;
+					meteorlar[i].meteorKutusu.w = 110;
+					meteorlar[i].meteorKutusu.h = 110;
 				}
 				int kenar = rand() % 4; // kenardan olusmasi icin
 
@@ -296,8 +296,8 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 				double gidilecekX = hedefX - meteorlar[i].x; //meteorun rotasi
 				double gidilecekY = hedefY - meteorlar[i].y;
 
-				meteorlar[i].hizX = gidilecekX / 300.0; // burada hizini belirliyoruz
-				meteorlar[i].hizY = gidilecekY / 300.0;
+				meteorlar[i].hizX = gidilecekX / 400.0; // burada hizini belirliyoruz
+				meteorlar[i].hizY = gidilecekY / 400.0;
 
 				meteorlar[i].aci = 0;
 				meteorlar[i].donmeHizi = (rand() % 5) - 2.0; // donme hizini yapiyoruz
@@ -378,10 +378,58 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 			{
 				if (meteorlar[j].canli == true)
 				{
-					if (SDL_HasIntersection(&mermiler[i].mermikutusu, &meteorlar[j].meteorKutusu))
+					if (SDL_HasIntersection(&mermiler[i].mermikutusu, &meteorlar[j].meteorKutusu)) // mermi ve meteor kesiþti mi
 					{
+
 						mermiler[i].canli = false;
 						meteorlar[j].canli = false;
+
+						if (meteorlar[j].meteorKutusu.w > 70) // meteor kücük degilse
+						{
+							int yeniMeteor = 0; // 2 mermi olusturmak icin
+							for (int k = 0; k < maxMeteor; k++) // yeni meteorlari tutucaz
+							{
+								if (meteorlar[k].canli == false && k != j) // bos bir yer bulup orda bolunen parcayi dogurcaz ama buyuk olanýn ustune yazmasini istemiyoruz
+								{
+									meteorlar[k].canli = true;
+									meteorlar[k].cesit = meteorlar[j].cesit; // resmin ayni kalmasini istiyoruz
+
+									meteorlar[k].x = meteorlar[j].x; //ayni konumdan firlicaklar
+									meteorlar[k].y = meteorlar[j].y;
+
+									if (meteorlar[j].meteorKutusu.w == 110) //enbuyukse 2 tane orta yap
+									{
+										meteorlar[k].meteorKutusu.w = 90;
+										meteorlar[k].meteorKutusu.h = 90;
+									}
+									else //orta ise 2 tane kucuk yap
+									{
+										meteorlar[k].meteorKutusu.w = 70; 
+										meteorlar[k].meteorKutusu.h = 70;
+									}
+									meteorlar[k].hizX = ((rand() % 5) - 2.0); //rastgele hizlarla gitsinler
+									meteorlar[k].hizY = ((rand() % 5) - 2.0);
+									
+									if (meteorlar[k].hizX == 0) //eger 0 cýkarsa meteorun durmamasi icin
+									{
+										meteorlar[k].hizX = 1.5;
+									}
+									if (meteorlar[k].hizY == 0)
+									{
+										meteorlar[k].hizY = -1.5;
+									}
+
+									meteorlar[k].aci = 0;
+									meteorlar[k].donmeHizi = 2.0; //donme acisi sabit olsun
+
+									yeniMeteor++;
+									if (yeniMeteor == 2)
+									{
+										break; //donguden cikart
+									}
+								}
+							}
+						}
 
 						break;
 					}
@@ -402,7 +450,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 
 
 	int main(int argc, char* args[]) //mainimizi açýyoruz fakat parantez içlerine dýþardan uygulamayý açarken gelicek olan komutlarýn sayýsýný tutmak icin int argc, dýþardan gelen komutlarýn ne oldugunu tutabilcegimiz bir char pointer dizisi olusturuyoruz.  
-//pointer þeklinde olusturmamýzýn sebebi ise birden fazla string yapýsýný tutabilmek
+	//pointer þeklinde olusturmamýzýn sebebi ise birden fazla string yapýsýný tutabilmek
 {		
 		if (!pencereyiAC())//pencere ac fonksiyonunu çaðýrýp false veya true döndürdügünü kontrol ediyoruz
 		{
