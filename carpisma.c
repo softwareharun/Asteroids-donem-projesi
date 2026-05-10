@@ -73,3 +73,38 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 		}
 	}
 }
+
+void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CANÝMÝZÝ AZALTÝYORUZ
+{
+	for (int i = 0; i < maxMeteor; i++)
+	{
+		if (meteorlar[i].canli == true)
+		{
+			if (SDL_HasIntersection(&gemi->gemikutusu, &meteorlar[i].meteorKutusu))
+			{
+				meteorlar[i].canli = false;
+
+				if (meteorlar[i].meteorKutusu.w == 110)
+				{
+					gemi->can -= 50;
+					printf("buyuk meteora carptin kalan can : %d\n", gemi->can);
+				}
+				if (meteorlar[i].meteorKutusu.w == 90)
+				{
+					gemi->can -= 30;
+					printf("orta meteora carptin kalan can : %d\n", gemi->can);
+				}
+				if (meteorlar[i].meteorKutusu.w == 70)
+				{
+					gemi->can -= 20;
+					printf("Kucuk meteora carptin kalan can : %d\n", gemi->can);
+				}
+				if (gemi->can <= 0)
+				{
+					printf("Oldun..");
+				}
+			}
+		}
+	}
+}
+

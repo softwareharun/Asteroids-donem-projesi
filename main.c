@@ -107,6 +107,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		meteorlariFirlat(meteorlar);//cagiriyoruz
 		meteorlariHareketEttir(meteorlar);//cagiriyoruz
 		meteorVurma(mermiler, meteorlar);//cagiriyoruz
+		hasarAlma(&gemi, meteorlar);
 		ekraniBoya(); //cagiriyoruz
 		gemiCiz(&gemi); //cagiriyoruz
 		mermiCiz(mermiler); //cagiriyoruz
@@ -118,6 +119,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 
 	return 0;
 }
+
 
 
 

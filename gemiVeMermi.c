@@ -16,6 +16,7 @@ void gemiOlustur(Gemi* gemi) //gemiyi olusturmayi fonkiyonla yapiyoruz mainin ic
 	gemi->hizY = 0.00;
 	gemi->aci = 0.00;
 	gemi->atisSuresi = 15;
+	gemi->can = 100;
 
 	gemi->gemikutusu.x = (int)gemi->x;
 	gemi->gemikutusu.y = (int)gemi->y;
