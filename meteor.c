@@ -46,20 +46,24 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 				}
 				int kenar = rand() % 4; // kenardan olusmasi icin
 
-				if (kenar == 0) {
+				if (kenar == 0) 
+				{
 					meteorlar[i].x = rand() % pencereGenisligi;
-					meteorlar[i].y = 0;
+					meteorlar[i].y = -50; 
 				}
-				if (kenar == 1) {
+				if (kenar == 1) 
+				{
 					meteorlar[i].x = rand() % pencereGenisligi;
-					meteorlar[i].y = pencereUzunlugu;
+					meteorlar[i].y = pencereUzunlugu + 50; 
 				}
-				if (kenar == 2) {
-					meteorlar[i].x = 0;
+				if (kenar == 2) 
+				{
+					meteorlar[i].x = -50; 
 					meteorlar[i].y = rand() % pencereUzunlugu;
 				}
-				if (kenar == 3) {
-					meteorlar[i].x = pencereGenisligi;
+				if (kenar == 3) 
+				{
+					meteorlar[i].x = pencereGenisligi + 50; 
 					meteorlar[i].y = rand() % pencereUzunlugu;
 				}
 				double gidilecekX = hedefX - meteorlar[i].x; //meteorun rotasi
@@ -70,6 +74,8 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 
 				meteorlar[i].aci = 0;
 				meteorlar[i].donmeHizi = (rand() % 5) - 2.0; // donme hizini yapiyoruz
+				meteorlar[i].meteorKutusu.x = (int)meteorlar[i].x; // hayalet meteorlarin olustugunu farkedip konumu guncelledim
+				meteorlar[i].meteorKutusu.y = (int)meteorlar[i].y;
 				meteorlar[i].canli = true;
 
 				break; // döngüden cýkýyoruz
@@ -88,27 +94,22 @@ void meteorlariHareketEttir(Meteor meteorlar[]) // meteorlari hareket ettiriyoru
 			meteorlar[i].x += meteorlar[i].hizX; // onceden belirledigimiz hiz ile yapiyoruz
 			meteorlar[i].y += meteorlar[i].hizY;
 
-			if (meteorlar[i].x > pencereGenisligi) {
-				meteorlar[i].x = 0;
+			if (meteorlar[i].x > pencereGenisligi + 50) {
+				meteorlar[i].x = -50;
 			}
-			else if (meteorlar[i].x < 0) {
-				meteorlar[i].x = pencereGenisligi;
+			else if (meteorlar[i].x < -50) {
+				meteorlar[i].x = pencereGenisligi + 50;
 			}
-			if (meteorlar[i].y > pencereUzunlugu) {
-				meteorlar[i].y = 0;
+			if (meteorlar[i].y > pencereUzunlugu + 50) {
+				meteorlar[i].y = -50;
 			}
-			else if (meteorlar[i].y < 0) {
-				meteorlar[i].y = pencereUzunlugu;
+			else if (meteorlar[i].y < -50) {
+				meteorlar[i].y = pencereUzunlugu + 50;
 			}
 
 			meteorlar[i].meteorKutusu.x = (int)meteorlar[i].x; // en son olarak konumu guncelliyoruz
 			meteorlar[i].meteorKutusu.y = (int)meteorlar[i].y;
 			meteorlar[i].aci += meteorlar[i].donmeHizi;
-
-			if (meteorlar[i].x < 0 || meteorlar[i].x > pencereGenisligi || meteorlar[i].y < 0 || meteorlar[i].y > pencereUzunlugu) // ekrandan cikarsa ölsün
-			{
-				meteorlar[i].canli = false;
-			}
 		}
 	}
 }

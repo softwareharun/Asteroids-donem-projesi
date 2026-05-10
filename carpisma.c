@@ -10,7 +10,7 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 		{
 			for (int j = 0; j < maxMeteor; j++)
 			{
-				if (meteorlar[j].canli == true)
+				if (meteorlar[j].canli == true && mermiler[i].canli == true)
 				{
 					if (SDL_HasIntersection(&mermiler[i].mermikutusu, &meteorlar[j].meteorKutusu)) // mermi ve meteor kesiþti mi
 					{
@@ -19,7 +19,6 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 						meteorlar[j].canli = false;
 
 						skor += 10;
-						printf("skor : %d\n", skor);
 
 						if (meteorlar[j].meteorKutusu.w > 70) // meteor kücük degilse
 						{
@@ -34,6 +33,9 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 
 									meteorlar[k].x = meteorlar[j].x; //ayni konumdan firlicaklar
 									meteorlar[k].y = meteorlar[j].y;
+
+									meteorlar[k].meteorKutusu.x = (int)meteorlar[k].x; //BURADA KONUMU GUNCELLÝYORUZ OLENIN YERINDE PARLAMA SORUNUNU COZDUM
+									meteorlar[k].meteorKutusu.y = (int)meteorlar[k].y;
 
 									if (meteorlar[j].meteorKutusu.w == 110) //enbuyukse 2 tane orta yap
 									{
@@ -91,17 +93,14 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 				if (meteorlar[i].meteorKutusu.w == 110)
 				{
 					gemi->can -= 50;
-					printf("buyuk meteora carptin kalan can : %d\n", gemi->can);
 				}
 				if (meteorlar[i].meteorKutusu.w == 90)
 				{
 					gemi->can -= 30;
-					printf("orta meteora carptin kalan can : %d\n", gemi->can);
 				}
 				if (meteorlar[i].meteorKutusu.w == 70)
 				{
 					gemi->can -= 20;
-					printf("Kucuk meteora carptin kalan can : %d\n", gemi->can);
 				}
 				double gMerkezX = gemi->x + (gemi->gemikutusu.w / 2.0);
 				double gMerkezY = gemi->y + (gemi->gemikutusu.h / 2.0);

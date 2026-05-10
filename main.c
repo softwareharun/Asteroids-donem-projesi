@@ -7,10 +7,11 @@
 #include "gemiVeMermi.h"
 #include "meteor.h"
 #include "carpisma.h"
+#include "arayuz.h"
 
 #define PI 3.14159265 // pi yi tanýmlýyoruz
 #define maxMermi 20 // degistirmicegimiz icin burada tanimladim
-#define maxMeteor 20 // ekranda olacak max meteor
+#define maxMeteor 50 // ekranda olacak max meteor
 
 SDL_Window* pencere = NULL; //penceremizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
 SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
@@ -113,6 +114,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		gemiCiz(&gemi); //cagiriyoruz
 		mermiCiz(mermiler); //cagiriyoruz
 		meteorlariCiz(meteorlar);//cagiriyoruz
+		canBari(&gemi);
 		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.
 	}
 	
