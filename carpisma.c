@@ -99,6 +99,29 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 					gemi->can -= 20;
 					printf("Kucuk meteora carptin kalan can : %d\n", gemi->can);
 				}
+				double savrulmaHizi = 3.0;
+				double gMerkezX = gemi->x + (gemi->gemikutusu.w / 2.0);
+				double gMerkezY = gemi->y + (gemi->gemikutusu.h / 2.0);
+				double mMerkezX = meteorlar[i].meteorKutusu.x + (meteorlar[i].meteorKutusu.w / 2.0);
+				double mMerkezY = meteorlar[i].meteorKutusu.y + (meteorlar[i].meteorKutusu.h / 2.0);
+
+				if (gMerkezX < mMerkezX) 
+				{
+					gemi->hizX -= savrulmaHizi; // Gemi soldaysa sola doðru it 
+				}
+				else
+				{
+					gemi->hizX += savrulmaHizi; // Gemi saðdaysa saða doðru it 
+				}
+				if (gMerkezY < mMerkezY) 
+				{
+					gemi->hizY -= savrulmaHizi; // Gemi yukarýdaysa yukarý doðru it 
+				}
+				else 
+				{
+					gemi->hizY += savrulmaHizi; // Gemi aþaðýdaysa aþaðý doðru it 
+				}
+
 				if (gemi->can <= 0)
 				{
 					printf("Oldun..");
