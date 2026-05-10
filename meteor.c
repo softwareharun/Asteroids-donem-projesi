@@ -21,7 +21,7 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 {
 	double hedefX = pencereGenisligi / 2.0; //en ortayi hedefliyoruz
 	double hedefY = pencereUzunlugu / 2.0;
-	if (rand() % 50 == 0) // hepsi bir anda olusmamasi icin
+	if (rand() % 80 == 0) // hepsi bir anda olusmamasi icin
 	{
 		for (int i = 0; i < maxMeteor; i++)
 		{
@@ -87,10 +87,23 @@ void meteorlariHareketEttir(Meteor meteorlar[]) // meteorlari hareket ettiriyoru
 		{
 			meteorlar[i].x += meteorlar[i].hizX; // onceden belirledigimiz hiz ile yapiyoruz
 			meteorlar[i].y += meteorlar[i].hizY;
-			meteorlar[i].aci += meteorlar[i].donmeHizi;
+
+			if (meteorlar[i].x > pencereGenisligi) {
+				meteorlar[i].x = 0;
+			}
+			else if (meteorlar[i].x < 0) {
+				meteorlar[i].x = pencereGenisligi;
+			}
+			if (meteorlar[i].y > pencereUzunlugu) {
+				meteorlar[i].y = 0;
+			}
+			else if (meteorlar[i].y < 0) {
+				meteorlar[i].y = pencereUzunlugu;
+			}
 
 			meteorlar[i].meteorKutusu.x = (int)meteorlar[i].x; // en son olarak konumu guncelliyoruz
 			meteorlar[i].meteorKutusu.y = (int)meteorlar[i].y;
+			meteorlar[i].aci += meteorlar[i].donmeHizi;
 
 			if (meteorlar[i].x < 0 || meteorlar[i].x > pencereGenisligi || meteorlar[i].y < 0 || meteorlar[i].y > pencereUzunlugu) // ekrandan cikarsa ölsün
 			{
