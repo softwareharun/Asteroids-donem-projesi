@@ -18,6 +18,9 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 						mermiler[i].canli = false;
 						meteorlar[j].canli = false;
 
+						skor += 10;
+						printf("skor : %d\n", skor);
+
 						if (meteorlar[j].meteorKutusu.w > 70) // meteor kücük degilse
 						{
 							int yeniMeteor = 0; // 2 mermi olusturmak icin
@@ -76,6 +79,7 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 
 void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CANÝMÝZÝ AZALTÝYORUZ
 {
+	gemi->savrulmaHizi = 1.0;
 	for (int i = 0; i < maxMeteor; i++)
 	{
 		if (meteorlar[i].canli == true)
@@ -99,7 +103,6 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 					gemi->can -= 20;
 					printf("Kucuk meteora carptin kalan can : %d\n", gemi->can);
 				}
-				double savrulmaHizi = 1.0;
 				double gMerkezX = gemi->x + (gemi->gemikutusu.w / 2.0);
 				double gMerkezY = gemi->y + (gemi->gemikutusu.h / 2.0);
 				double mMerkezX = meteorlar[i].meteorKutusu.x + (meteorlar[i].meteorKutusu.w / 2.0);
@@ -107,19 +110,19 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 
 				if (gMerkezX < mMerkezX) 
 				{
-					gemi->hizX -= savrulmaHizi; // Gemi soldaysa sola doðru it 
+					gemi->hizX -= gemi->savrulmaHizi; // Gemi soldaysa sola doðru it 
 				}
 				else
 				{
-					gemi->hizX += savrulmaHizi; // Gemi saðdaysa saða doðru it 
+					gemi->hizX += gemi->savrulmaHizi; // Gemi saðdaysa saða doðru it 
 				}
 				if (gMerkezY < mMerkezY) 
 				{
-					gemi->hizY -= savrulmaHizi; // Gemi yukarýdaysa yukarý doðru it 
+					gemi->hizY -= gemi->savrulmaHizi; // Gemi yukarýdaysa yukarý doðru it 
 				}
 				else 
 				{
-					gemi->hizY += savrulmaHizi; // Gemi aþaðýdaysa aþaðý doðru it 
+					gemi->hizY += gemi->savrulmaHizi; // Gemi aþaðýdaysa aþaðý doðru it 
 				}
 
 				if (gemi->can <= 0)

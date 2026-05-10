@@ -10,6 +10,7 @@
 
 extern const int pencereUzunlugu;
 extern const int pencereGenisligi;
+extern int skor;
 extern SDL_Renderer* ekrancizici;
 
 extern SDL_Texture* meteor1;

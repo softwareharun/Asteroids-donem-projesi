@@ -27,6 +27,7 @@ typedef struct {
 	double aci; // eski gemiAci miz
 	int atisSuresi; //eski atisSuremiz
 	double itisHizi; // ilk basta yaparken mainde olan ve sabit oldugu icin degismicek olan hýzýmýzý depolicak olan degisken
+	double savrulmaHizi;
 	int can;
 	SDL_Rect gemikutusu;// SDL_Rect gemi olan ve geminin baslangýc konumunu belirten structu buraya aldim kutu ile degistirdim
 } Gemi;

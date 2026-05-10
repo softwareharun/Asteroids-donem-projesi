@@ -25,6 +25,7 @@ SDL_Texture* planet3 = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
 const int pencereGenisligi = 800;
+int skor = 0;
 
 const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
 
