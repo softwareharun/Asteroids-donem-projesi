@@ -1,14 +1,16 @@
 #include <stdio.h>
+#include <time.h>
 #include "meteor.h"
 
 void meteorOlustur(Meteor meteorlar[]) // meteorlari olusturuyoruz
 {
-	meteor1 = IMG_LoadTexture(ekrancizici, "meteor.png");
-	meteor2 = IMG_LoadTexture(ekrancizici, "meteor2.png");
-	meteor3 = IMG_LoadTexture(ekrancizici, "meteor3.png");
-	planet1 = IMG_LoadTexture(ekrancizici, "dunya.png");
-	planet2 = IMG_LoadTexture(ekrancizici, "saturn.png");
-	planet3 = IMG_LoadTexture(ekrancizici, "uranus.png");
+	srand((unsigned)time(NULL)); // rastgele sayi uretmek icin srand ve time fonksiyonlarini kullaniyoruz unsigned ile cunku rand fonksiyonu unsigned int deger donduruyor
+	meteor1 = IMG_LoadTexture(ekrancizici, "resimler/meteor.png");
+	meteor2 = IMG_LoadTexture(ekrancizici, "resimler/meteor2.png");
+	meteor3 = IMG_LoadTexture(ekrancizici, "resimler/meteor3.png");
+	planet1 = IMG_LoadTexture(ekrancizici, "resimler/dunya.png");
+	planet2 = IMG_LoadTexture(ekrancizici, "resimler/saturn.png");
+	planet3 = IMG_LoadTexture(ekrancizici, "resimler/uranus.png");
 
 	for (int i = 0; i < maxMeteor; i++)
 	{

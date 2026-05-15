@@ -3,6 +3,8 @@
 #include <stdbool.h> //game loop için bool kullanmak için
 #include <SDL_image.h> // fotograf yukleyebilmek icin
 #include <math.h> //sin ve cos fonkisyonlarýný eklemek icin
+#include <SDL_ttf.h> //ekrana font yazdirmak icin
+#include <time.h> // rastgele sayi uretmek icin
 
 #include "gemiVeMermi.h"
 #include "meteor.h"
@@ -23,6 +25,7 @@ SDL_Texture* meteor3 = NULL;
 SDL_Texture* planet1 = NULL;
 SDL_Texture* planet2 = NULL;
 SDL_Texture* planet3 = NULL;
+TTF_Font* font = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
 const int pencereGenisligi = 800;
@@ -39,6 +42,15 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 		return false; //dosya açýlamazsa false döndür
 	}
 	IMG_Init(IMG_INIT_PNG);
+	if (TTF_Init() == -1) {
+		printf("TTF baslatilamadi.. Hata: %s\n", TTF_GetError());
+		return false;
+	}
+	font = TTF_OpenFont("resimler/arial.ttf", 20);
+	if (font == NULL) {
+		printf("Font dosyasi bulunamadi.. Hata: %s\n", TTF_GetError());
+	
+	}
 	pencere = SDL_CreateWindow("AsteroidsGame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pencereGenisligi, pencereUzunlugu, SDL_WINDOW_SHOWN); //penceremizi olusturuyoruz ilk parametremiz pencerenin üst cugubunda yazýcak olan isim, ikincisi pencerenin yatay konumda nerden baþlayacagý, üçüncüsü dikey konumda, dört ve besinciler ise pencremizin uzunlugu ve genisligi, sdl window shown yazarak da olusturur olusturmaz pencerenin açýlmasýný saglamak.
 	if (pencere == NULL)//pencere acildi mi kontrol ediyoruz
 	{
@@ -64,7 +76,18 @@ void ekraniBoya() // ekrani siyaha boyamayi ve temizleme isini fonksiyonla yapti
 
 void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bunu çaðýrmamýz yeticek
 {
+	if (font != NULL) {
+		TTF_CloseFont(font);
+	}
+	TTF_Quit();
 	SDL_DestroyTexture(uzayGemisi);//burda fotografi siliyoruz
+	SDL_DestroyTexture(mermi);
+	SDL_DestroyTexture(meteor1);
+	SDL_DestroyTexture(meteor2);
+	SDL_DestroyTexture(meteor3);
+	SDL_DestroyTexture(planet1);
+	SDL_DestroyTexture(planet2);
+	SDL_DestroyTexture(planet3);
 	SDL_DestroyRenderer(ekrancizici);//rendereri kapatiyoruz
 	SDL_DestroyWindow(pencere); //olusturdugumuz pencereyi kapatayiyoruz
 	IMG_Quit();//png yi okumayi saglayan motoru durduruyoruz 
@@ -115,6 +138,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		mermiCiz(mermiler); //cagiriyoruz
 		meteorlariCiz(meteorlar);//cagiriyoruz
 		canBari(&gemi);
+		canSayisi(&gemi);
 		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.
 	}
 	

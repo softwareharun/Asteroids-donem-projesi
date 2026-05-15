@@ -1,7 +1,9 @@
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include "arayuz.h"
 
 extern SDL_Renderer* ekrancizici;
+extern TTF_Font* font;
 
 #include <SDL.h>
 #include "arayuz.h"
@@ -43,4 +45,28 @@ void canBari(Gemi* gemi) {
     SDL_RenderDrawRect(ekrancizici, &arkaPlanKutusu);
 
     SDL_SetRenderDrawBlendMode(ekrancizici, SDL_BLENDMODE_NONE); //blend modu kapatiyoruz diger cizimler etkilenmesin diye 
+}
+
+void canSayisi(Gemi* gemi)
+{
+    if (font == NULL) 
+    {
+        return;
+    }
+    char canMetni[10];
+	sprintf(canMetni, "%d", gemi->can); // can sayisini stringe ceviriyoruz 
+    SDL_Color beyaz = { 255, 255, 255, 255 }; 
+    SDL_Surface* yaziYuzeyi = TTF_RenderText_Solid(font, canMetni, beyaz);
+	SDL_Texture* yaziDokusu = SDL_CreateTextureFromSurface(ekrancizici, yaziYuzeyi); // burada yaziyi ekrana basmak icin yuzeyi dokuya cevirmemiz gerekiyor
+    SDL_Rect yaziKutusu;
+	yaziKutusu.x = 30;
+	yaziKutusu.y = 22;
+	yaziKutusu.w = yaziYuzeyi->w; // yazinin genisligi ve uzunlugu yuzeyin genisligi ve uzunlugu kadar olsun diye yazinin genisligini ve uzunlugunu yuzeyden aliyoruz
+	yaziKutusu.h = yaziYuzeyi->h;
+
+	SDL_RenderCopy(ekrancizici, yaziDokusu, NULL, &yaziKutusu); //NULL yaparak yazinin tamamini seciyoruz ve nereye basacagimizi belirtiyoruz
+
+  
+    SDL_FreeSurface(yaziYuzeyi);
+    SDL_DestroyTexture(yaziDokusu);
 }

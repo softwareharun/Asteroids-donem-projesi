@@ -4,6 +4,6 @@
 #include "gemiVeMermi.h"
 
 void canBari(Gemi* gemi);
-
+void canSayisi(Gemi* gemi);
 
 #endif

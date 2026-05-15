@@ -3,7 +3,7 @@
 
 void gemiOlustur(Gemi* gemi) //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki karmasayi azaltiyoruz
 {
-	uzayGemisi = IMG_LoadTexture(ekrancizici, "gemi.png");//fotografimizi burda png olarak aliyoruz ilk parametre yine islemi kimin yapicagi img load ile almamýz ise bu sekilde ekrana basilmaya hazir png olarak vermesi
+	uzayGemisi = IMG_LoadTexture(ekrancizici, "resimler/gemi.png");//fotografimizi burda png olarak aliyoruz ilk parametre yine islemi kimin yapicagi img load ile almamýz ise bu sekilde ekrana basilmaya hazir png olarak vermesi
 	if (uzayGemisi == NULL) {
 		printf("gemi yuklenemedi Hata : %s\n", IMG_GetError());
 	}
@@ -88,7 +88,7 @@ void gemiyiPenceredeTut(Gemi* gemi) //gemiyi pencerede tutmak icin
 
 void mermiOlustur(Mermi mermiler[]) // burda mermimizi olusturuyoruz olusan mermilerin durumlarini false yaparak baska bir deger atanmasýný engelliyoruz
 {
-	mermi = IMG_LoadTexture(ekrancizici, "mermi.png");
+	mermi = IMG_LoadTexture(ekrancizici, "resimler/mermi.png");
 	for (int i = 0; i < maxMermi; i++)
 	{
 		mermiler[i].canli = false;
