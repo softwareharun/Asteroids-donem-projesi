@@ -1,8 +1,7 @@
 #include <stdio.h>
+#include "carpisma.h"
 #include "gemiVeMermi.h"
 #include "meteor.h"
-
-extern int oyunDurumu;
 
 void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu kontrol ediyoruz eger mermi ve meteorun kutulari kesisiyorsa her ikisini de ölü yaparak ekrandan kaybolmalarini sagliyoruz
 {

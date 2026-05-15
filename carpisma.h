@@ -4,6 +4,8 @@
 #include "gemiVeMermi.h"
 #include "meteor.h"
 
+extern int oyunDurumu;
+
 void meteorVurma(Mermi mermiler[], Meteor meteorlar[]);
 void hasarAlma(Gemi* gemi, Meteor meteorlar[]);
 

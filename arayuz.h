@@ -3,8 +3,16 @@
 
 #include "gemiVeMermi.h"
 
+extern SDL_Renderer* ekrancizici;
+extern TTF_Font* font;
+extern SDL_Texture* oyunSonuEkrani;
+extern int skor;
+extern const int pencereGenisligi;
+extern const int pencereUzunlugu;
+
+
 void canBari(Gemi* gemi);
 void canSayisi(Gemi* gemi);
-
+void skorYaz();
 
 #endif

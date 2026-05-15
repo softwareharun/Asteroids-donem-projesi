@@ -161,6 +161,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			meteorlariCiz(meteorlar);
 			canBari(&gemi);
 			canSayisi(&gemi);
+			skorYaz();
 		}
 		else if (oyunDurumu == 1) // oyun sonu ekranini gösteriyoruz
 		{

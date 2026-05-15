@@ -2,13 +2,6 @@
 #include <SDL_ttf.h>
 #include "arayuz.h"
 
-extern SDL_Renderer* ekrancizici;
-extern TTF_Font* font;
-extern SDL_Texture* oyunSonuEkrani;
-
-#include <SDL.h>
-#include "arayuz.h"
-
 void canBari(Gemi* gemi) {
    
     SDL_SetRenderDrawBlendMode(ekrancizici, SDL_BLENDMODE_BLEND); //arka plan gözükmesi icin bunu ekliyoruz
@@ -67,9 +60,29 @@ void canSayisi(Gemi* gemi)
 
 	SDL_RenderCopy(ekrancizici, yaziDokusu, NULL, &yaziKutusu); //NULL yaparak yazinin tamamini seciyoruz ve nereye basacagimizi belirtiyoruz
 
-  
     SDL_FreeSurface(yaziYuzeyi);
     SDL_DestroyTexture(yaziDokusu);
 }
 
+void skorYaz()
+{
+    if (font == NULL)
+    {
+        return;
+    }
+    char skorMetni[30];
+    sprintf(skorMetni, "SKOR: %d", skor);
+    SDL_Color sari = { 255, 255, 0, 255 };
+    SDL_Surface* yaziYuzeyi = TTF_RenderText_Blended(font, skorMetni, sari);
+    SDL_Texture* yaziDokusu = SDL_CreateTextureFromSurface(ekrancizici, yaziYuzeyi);
+    SDL_Rect yaziKutusu;
+    yaziKutusu.x = (pencereGenisligi - yaziYuzeyi->w) / 2;
+    yaziKutusu.y = (20);
+    yaziKutusu.w = yaziYuzeyi->w;
+    yaziKutusu.h = yaziYuzeyi->h;
 
+    SDL_RenderCopy(ekrancizici, yaziDokusu, NULL, &yaziKutusu);
+
+    SDL_FreeSurface(yaziYuzeyi);
+    SDL_DestroyTexture(yaziDokusu);
+}
