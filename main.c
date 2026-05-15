@@ -25,11 +25,13 @@ SDL_Texture* meteor3 = NULL;
 SDL_Texture* planet1 = NULL;
 SDL_Texture* planet2 = NULL;
 SDL_Texture* planet3 = NULL;
+SDL_Texture* oyunSonuEkrani = NULL;
 TTF_Font* font = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
 const int pencereGenisligi = 800;
 int skor = 0;
+int oyunDurumu = 0;
 
 const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
 
@@ -42,12 +44,14 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 		return false; //dosya açýlamazsa false döndür
 	}
 	IMG_Init(IMG_INIT_PNG);
-	if (TTF_Init() == -1) {
+	if (TTF_Init() == -1) 
+	{
 		printf("TTF baslatilamadi.. Hata: %s\n", TTF_GetError());
 		return false;
 	}
 	font = TTF_OpenFont("resimler/arial.ttf", 20);
-	if (font == NULL) {
+	if (font == NULL) 
+	{
 		printf("Font dosyasi bulunamadi.. Hata: %s\n", TTF_GetError());
 	
 	}
@@ -58,11 +62,18 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 		return false; //pencere olusmazsa false döndür
 	}
 	ekrancizici = SDL_CreateRenderer(pencere, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);//rendererimizi olusturuyoruz ilk parametre nerde iþ yapacagi ikincisi ise ekrankarti ile ne sekilde iletisime gececegi biz -1 diyerek sorudan kurtuluyoruz en sondaki ise donanim hizlandirma islemi burda rendereri guclendiriyoruz gibi
-	if(ekrancizici == NULL)//kontrol
+	if (ekrancizici == NULL)//kontrol
 	{
 		printf("Renderer olusturulamadi.. Hata :%s\n", SDL_GetError());
 		return false;
 	}
+	oyunSonuEkrani = IMG_LoadTexture(ekrancizici, "resimler/gameover.png"); //oyun sonu ekranini tanimladim
+	if (oyunSonuEkrani == NULL) 
+	{
+		printf("Oyun sonu ekrani yuklenemedi.. Hata : %s\n", SDL_GetError());
+		return false;
+	}
+	
 	
 	return true;
 }
@@ -88,6 +99,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	SDL_DestroyTexture(planet1);
 	SDL_DestroyTexture(planet2);
 	SDL_DestroyTexture(planet3);
+	SDL_DestroyTexture(oyunSonuEkrani);
 	SDL_DestroyRenderer(ekrancizici);//rendereri kapatiyoruz
 	SDL_DestroyWindow(pencere); //olusturdugumuz pencereyi kapatayiyoruz
 	IMG_Quit();//png yi okumayi saglayan motoru durduruyoruz 
@@ -113,6 +125,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	meteorOlustur(meteorlar); // cagiriyoruz
 	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 	SDL_Event olay; //basýlan tuslari tutmamiz icin
+
 		
 	while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
 
@@ -125,20 +138,35 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			}
 			
 		}
-
-		gemiyiHareketEttir(&gemi);// cagiriyoruz
-		gemiyiPenceredeTut(&gemi); // cagiriyoruz
-		mermiAtesle(mermiler, &gemi);//cagiriyoruz
-		meteorlariFirlat(meteorlar);//cagiriyoruz
-		meteorlariHareketEttir(meteorlar);//cagiriyoruz
-		meteorVurma(mermiler, meteorlar);//cagiriyoruz
-		hasarAlma(&gemi, meteorlar);
 		ekraniBoya(); //cagiriyoruz
-		gemiCiz(&gemi); //cagiriyoruz
-		mermiCiz(mermiler); //cagiriyoruz
-		meteorlariCiz(meteorlar);//cagiriyoruz
-		canBari(&gemi);
-		canSayisi(&gemi);
+		
+		if (oyunDurumu == 0) // artik ekranimiz 1 den fazla olucagi icin ana oyunu ve diger ekranlari ayirdim
+		{
+			
+			gemiyiHareketEttir(&gemi);
+			gemiyiPenceredeTut(&gemi);
+			mermiAtesle(mermiler, &gemi);
+			meteorlariFirlat(meteorlar);
+			meteorlariHareketEttir(meteorlar);
+			meteorVurma(mermiler, meteorlar);
+			hasarAlma(&gemi, meteorlar);
+
+		if (gemi.can <= 0) // hasarAlma fonksiyonundan sonra geminin canini kontrol ediyoruz
+		{
+			oyunDurumu = 1;
+		}
+
+			gemiCiz(&gemi);
+			mermiCiz(mermiler);
+			meteorlariCiz(meteorlar);
+			canBari(&gemi);
+			canSayisi(&gemi);
+		}
+		else if (oyunDurumu == 1) // oyun sonu ekranini gösteriyoruz
+		{
+			SDL_RenderCopy(ekrancizici, oyunSonuEkrani, NULL, NULL);
+		}
+
 		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.
 	}
 	

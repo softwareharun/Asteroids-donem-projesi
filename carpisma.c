@@ -2,6 +2,8 @@
 #include "gemiVeMermi.h"
 #include "meteor.h"
 
+extern int oyunDurumu;
+
 void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu kontrol ediyoruz eger mermi ve meteorun kutulari kesisiyorsa her ikisini de ölü yaparak ekrandan kaybolmalarini sagliyoruz
 {
 	for (int i = 0; i < maxMermi; i++)
@@ -126,7 +128,8 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 
 				if (gemi->can <= 0)
 				{
-					printf("Oldun..");
+					gemi->can = 0;
+					oyunDurumu = 1; // oyun durumunu degistirdim
 				}
 			}
 		}

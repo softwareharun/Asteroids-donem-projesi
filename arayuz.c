@@ -4,6 +4,7 @@
 
 extern SDL_Renderer* ekrancizici;
 extern TTF_Font* font;
+extern SDL_Texture* oyunSonuEkrani;
 
 #include <SDL.h>
 #include "arayuz.h"
@@ -70,3 +71,5 @@ void canSayisi(Gemi* gemi)
     SDL_FreeSurface(yaziYuzeyi);
     SDL_DestroyTexture(yaziDokusu);
 }
+
+
