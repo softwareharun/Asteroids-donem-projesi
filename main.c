@@ -12,8 +12,6 @@
 #include "arayuz.h"
 
 #define PI 3.14159265 // pi yi tanýmlýyoruz
-#define maxMermi 20 // degistirmicegimiz icin burada tanimladim
-#define maxMeteor 50 // ekranda olacak max meteor
 
 SDL_Window* pencere = NULL; //penceremizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
 SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
@@ -31,6 +29,7 @@ TTF_Font* font = NULL;
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
 const int pencereGenisligi = 800;
 int skor = 0;
+int enYuksekSkor = 0;
 int oyunDurumu = 0;
 
 const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
@@ -119,12 +118,15 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	tuslar = SDL_GetKeyboardState(NULL); // burada tus kontrolu yapicaz sadece evet ve hayýr döndürdüðü icin 8 bit yeterli
 	Gemi gemi; // yukarda acitigimiz stuctu fonksiyonlara gondermek icin degisken atiyoruz
 	gemiOlustur(&gemi); //gemiyi cagiriyoruz
-	Mermi mermiler[maxMermi]; //mermilerimizi tutmasi icin dizi olusturuyoruz
+	Mermi mermiler[MAXMERMI]; //mermilerimizi tutmasi icin dizi olusturuyoruz
 	mermiOlustur(mermiler); // mermiyi olusturma fonksiyonunu cagiriyoruz
-	Meteor meteorlar[maxMeteor]; //dizi olusturuyoruz
+	Meteor meteorlar[MAXMETEOR]; //dizi olusturuyoruz
 	meteorOlustur(meteorlar); // cagiriyoruz
 	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 	SDL_Event olay; //basýlan tuslari tutmamiz icin
+
+
+	rekoruOku();
 
 		
 	while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
@@ -154,6 +156,11 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		if (gemi.can <= 0) // hasarAlma fonksiyonundan sonra geminin canini kontrol ediyoruz
 		{
 			oyunDurumu = 1;
+			if (skor > enYuksekSkor)
+			{
+				enYuksekSkor = skor;
+				rekoruKaydet();
+			}
 		}
 
 			gemiCiz(&gemi);
@@ -166,6 +173,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 		else if (oyunDurumu == 1) // oyun sonu ekranini gösteriyoruz
 		{
 			SDL_RenderCopy(ekrancizici, oyunSonuEkrani, NULL, NULL);
+			rekoruVeSkoruYaz(); // oyun sonu ekraninda rekoru ve skoru gosteriyoruz
 		}
 
 		SDL_RenderPresent(ekrancizici);//sdlrenderpresent ile gösterme iþini yapar içindeki parametre yine hangi renderin kullanýldýgý.

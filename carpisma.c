@@ -5,11 +5,11 @@
 
 void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu kontrol ediyoruz eger mermi ve meteorun kutulari kesisiyorsa her ikisini de ölü yaparak ekrandan kaybolmalarini sagliyoruz
 {
-	for (int i = 0; i < maxMermi; i++)
+	for (int i = 0; i < MAXMERMI; i++)
 	{
 		if (mermiler[i].canli == true)
 		{
-			for (int j = 0; j < maxMeteor; j++)
+			for (int j = 0; j < MAXMETEOR; j++)
 			{
 				if (meteorlar[j].canli == true && mermiler[i].canli == true)
 				{
@@ -24,7 +24,7 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 						if (meteorlar[j].meteorKutusu.w > 70) // meteor kücük degilse
 						{
 							int yeniMeteor = 0; // 2 mermi olusturmak icin
-							for (int k = 0; k < maxMeteor; k++) // yeni meteorlari tutucaz
+							for (int k = 0; k < MAXMETEOR; k++) // yeni meteorlari tutucaz
 							{
 								if (meteorlar[k].canli == false && k != j) // bos bir yer bulup orda bolunen parcayi dogurcaz ama buyuk olanýn ustune yazmasini istemiyoruz
 								{
@@ -83,7 +83,7 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CANÝMÝZÝ AZALTÝYORUZ
 {
 	gemi->savrulmaHizi = 1.0;
-	for (int i = 0; i < maxMeteor; i++)
+	for (int i = 0; i < MAXMETEOR; i++)
 	{
 		if (meteorlar[i].canli == true)
 		{

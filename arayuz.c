@@ -86,3 +86,69 @@ void skorYaz()
     SDL_FreeSurface(yaziYuzeyi);
     SDL_DestroyTexture(yaziDokusu);
 }
+
+void rekoruOku() //rekoru okuyoruz 
+{
+    FILE* dosyadanOku;
+    dosyadanOku = fopen("resimler/rekor.txt", "r");
+
+    if (dosyadanOku != NULL)
+    {
+        (void)fscanf(dosyadanOku, "%d", &enYuksekSkor); // fscanf in bir deger döndürdügünü ignorlamak icin basina void koyduk
+        fclose(dosyadanOku);
+    }
+}
+
+void rekoruKaydet() //oyunu kapatýp actigimizda rekorun gitmemesi icin dosya acip oraya kaydediyoruz
+{
+    FILE* dosyayaYaz;
+    dosyayaYaz = fopen("resimler/rekor.txt", "w");
+    if (dosyayaYaz != NULL)
+    {
+        fprintf(dosyayaYaz, "%d", enYuksekSkor);
+        fclose(dosyayaYaz);
+    }
+}
+
+void rekoruVeSkoruYaz() // burda ise yazdirma islemi yapiyoruz
+{
+    if (font != NULL)
+    {
+        char sonSkorMetni[50];
+        char yuksekSkorMetni[50];
+
+        sprintf(sonSkorMetni, "Skor : %d", skor);
+        sprintf(yuksekSkorMetni, "En Yuksek Skor : %d", enYuksekSkor);
+
+        SDL_Color beyaz = { 255, 255, 255, 255 };
+        SDL_Color sari = { 255, 215, 0, 255 };
+
+        SDL_Surface* skorYuzeyi = TTF_RenderText_Solid(font, sonSkorMetni, beyaz);
+      
+        SDL_Texture* skorResmi = SDL_CreateTextureFromSurface(ekrancizici, skorYuzeyi);
+
+     
+        SDL_Rect skorKutusu = { 240, 360, skorYuzeyi->w, skorYuzeyi->h };
+
+      
+        SDL_RenderCopy(ekrancizici, skorResmi, NULL, &skorKutusu);
+
+       
+        SDL_FreeSurface(skorYuzeyi);
+        SDL_DestroyTexture(skorResmi);
+
+        SDL_Surface* rekorYuzeyi = TTF_RenderText_Solid(font, yuksekSkorMetni, sari);
+        
+        SDL_Texture* rekorResmi = SDL_CreateTextureFromSurface(ekrancizici, rekorYuzeyi);
+
+    
+        SDL_Rect rekorKutusu = { 360, 360, rekorYuzeyi->w, rekorYuzeyi->h };
+
+       
+        SDL_RenderCopy(ekrancizici, rekorResmi, NULL, &rekorKutusu);
+
+       
+        SDL_FreeSurface(rekorYuzeyi);
+        SDL_DestroyTexture(rekorResmi);
+    }
+}

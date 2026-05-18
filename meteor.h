@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define maxMeteor 20
+#define MAXMETEOR 20
 
 extern const int pencereUzunlugu;
 extern const int pencereGenisligi;

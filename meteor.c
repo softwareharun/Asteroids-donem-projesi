@@ -12,7 +12,7 @@ void meteorOlustur(Meteor meteorlar[]) // meteorlari olusturuyoruz
 	planet2 = IMG_LoadTexture(ekrancizici, "resimler/saturn.png");
 	planet3 = IMG_LoadTexture(ekrancizici, "resimler/uranus.png");
 
-	for (int i = 0; i < maxMeteor; i++)
+	for (int i = 0; i < MAXMETEOR; i++)
 	{
 		meteorlar[i].canli = false;
 	}
@@ -25,7 +25,7 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 	double hedefY = pencereUzunlugu / 2.0;
 	if (rand() % 80 == 0) // hepsi bir anda olusmamasi icin
 	{
-		for (int i = 0; i < maxMeteor; i++)
+		for (int i = 0; i < MAXMETEOR; i++)
 		{
 			if (meteorlar[i].canli == false)
 			{
@@ -89,7 +89,7 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 
 void meteorlariHareketEttir(Meteor meteorlar[]) // meteorlari hareket ettiriyoruz
 {
-	for (int i = 0; i < maxMeteor; i++)
+	for (int i = 0; i < MAXMETEOR; i++)
 	{
 		if (meteorlar[i].canli)
 		{
@@ -119,7 +119,7 @@ void meteorlariHareketEttir(Meteor meteorlar[]) // meteorlari hareket ettiriyoru
 void meteorlariCiz(Meteor meteorlar[]) // ekrana cizme
 {
 	SDL_Texture* basilacakResim = NULL;
-	for (int i = 0; i < maxMeteor; i++)
+	for (int i = 0; i < MAXMETEOR; i++)
 	{
 		if (meteorlar[i].canli)
 		{

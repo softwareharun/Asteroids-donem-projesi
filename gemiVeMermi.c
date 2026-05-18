@@ -89,7 +89,7 @@ void gemiyiPenceredeTut(Gemi* gemi) //gemiyi pencerede tutmak icin
 void mermiOlustur(Mermi mermiler[]) // burda mermimizi olusturuyoruz olusan mermilerin durumlarini false yaparak baska bir deger atanmasýný engelliyoruz
 {
 	mermi = IMG_LoadTexture(ekrancizici, "resimler/mermi.png");
-	for (int i = 0; i < maxMermi; i++)
+	for (int i = 0; i < MAXMERMI; i++)
 	{
 		mermiler[i].canli = false;
 	}
@@ -104,7 +104,7 @@ void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin maind
 	}
 	if (tuslar[SDL_SCANCODE_SPACE] && gemi->atisSuresi == 0) // eger space ye basildiysa ve aradan atis süresi kadar kare gectiyse
 	{
-		for (int i = 0; i < maxMermi; i++)
+		for (int i = 0; i < MAXMERMI; i++)
 		{
 			if (mermiler[i].canli == false) // siradaki atilmaya hazir ise 
 			{
@@ -126,7 +126,7 @@ void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin maind
 void mermiCiz(Mermi mermiler[]) // mermiyi ekrana cizdirmek icin mermileri tutan diziyi rendererimizi ve mermi texturemizi aliyoruz 
 {
 	mermiler->mermiHizi = 5.0;
-	for (int i = 0; i < maxMermi; i++)
+	for (int i = 0; i < MAXMERMI; i++)
 	{
 		mermiler[i].mermikutusu.w = 16; //mermi boyutlari
 		mermiler[i].mermikutusu.h = 16;

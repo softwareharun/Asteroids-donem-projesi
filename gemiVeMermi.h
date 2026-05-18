@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 #define PI 3.14159265
-#define maxMermi 20
+#define MAXMERMI 20
 
 extern const int pencereUzunlugu;
 extern const int pencereGenisligi;
