@@ -24,6 +24,7 @@ SDL_Texture* planet1 = NULL;
 SDL_Texture* planet2 = NULL;
 SDL_Texture* planet3 = NULL;
 SDL_Texture* oyunSonuEkrani = NULL;
+SDL_Texture* girisEkrani = NULL;
 TTF_Font* font = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
@@ -70,6 +71,12 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	if (oyunSonuEkrani == NULL) 
 	{
 		printf("Oyun sonu ekrani yuklenemedi.. Hata : %s\n", SDL_GetError());
+		return false;
+	}
+	girisEkrani = IMG_LoadTexture(ekrancizici, "resimler/giris.png"); //giris ekrani tanimladim
+	if (girisEkrani == NULL)
+	{
+		printf("Giris ekrani yuklenemedi.. Hata : %s\n", SDL_GetError());
 		return false;
 	}
 	
@@ -138,11 +145,20 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			{
 				oyunDevamEdiyor = false; // döngüden cikart
 			}
+			if (oyunDurumu == 0 && olay.type == SDL_KEYDOWN) // giris ekraninda herhangi bir tusa basilirsa oyun baslasin
+			{
+				oyunDurumu = 1;
+			}
 			
 		}
 		ekraniBoya(); //cagiriyoruz
+
+		if (oyunDurumu == 0) // giris ekrani ile baslatiyoruz
+		{
+			SDL_RenderCopy(ekrancizici, girisEkrani, NULL, NULL);
+		}
 		
-		if (oyunDurumu == 0) // artik ekranimiz 1 den fazla olucagi icin ana oyunu ve diger ekranlari ayirdim
+		if (oyunDurumu == 1) // artik ekranimiz 1 den fazla olucagi icin ana oyunu ve diger ekranlari ayirdim
 		{
 			
 			gemiyiHareketEttir(&gemi);
@@ -155,7 +171,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 
 		if (gemi.can <= 0) // hasarAlma fonksiyonundan sonra geminin canini kontrol ediyoruz
 		{
-			oyunDurumu = 1;
+			oyunDurumu = 2;
 			if (skor > enYuksekSkor)
 			{
 				enYuksekSkor = skor;
@@ -170,7 +186,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			canSayisi(&gemi);
 			skorYaz();
 		}
-		else if (oyunDurumu == 1) // oyun sonu ekranini gösteriyoruz
+		else if (oyunDurumu == 2) // oyun sonu ekranini gösteriyoruz
 		{
 			SDL_RenderCopy(ekrancizici, oyunSonuEkrani, NULL, NULL);
 			rekoruVeSkoruYaz(); // oyun sonu ekraninda rekoru ve skoru gosteriyoruz
