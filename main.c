@@ -25,6 +25,7 @@ SDL_Texture* planet2 = NULL;
 SDL_Texture* planet3 = NULL;
 SDL_Texture* oyunSonuEkrani = NULL;
 SDL_Texture* girisEkrani = NULL;
+SDL_Texture* duraklatmaEkrani = NULL;
 TTF_Font* font = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
@@ -79,6 +80,12 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 		printf("Giris ekrani yuklenemedi.. Hata : %s\n", SDL_GetError());
 		return false;
 	}
+	duraklatmaEkrani = IMG_LoadTexture(ekrancizici, "resimler/duraklatma.png");
+	if (duraklatmaEkrani == NULL)
+	{
+		printf("Duraklatma ekrani yuklenemedi.. Hata : %s\n", SDL_GetError());
+		return false;
+	}
 	
 	
 	return true;
@@ -106,6 +113,8 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	SDL_DestroyTexture(planet2);
 	SDL_DestroyTexture(planet3);
 	SDL_DestroyTexture(oyunSonuEkrani);
+	SDL_DestroyTexture(girisEkrani);
+	SDL_DestroyTexture(duraklatmaEkrani);
 	SDL_DestroyRenderer(ekrancizici);//rendereri kapatiyoruz
 	SDL_DestroyWindow(pencere); //olusturdugumuz pencereyi kapatayiyoruz
 	IMG_Quit();//png yi okumayi saglayan motoru durduruyoruz 
@@ -132,10 +141,8 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 	SDL_Event olay; //basýlan tuslari tutmamiz icin
 
-
 	rekoruOku();
-
-		
+	
 	while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
 
 	{
@@ -145,11 +152,24 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			{
 				oyunDevamEdiyor = false; // döngüden cikart
 			}
-			if (oyunDurumu == 0 && olay.type == SDL_KEYDOWN) // giris ekraninda herhangi bir tusa basilirsa oyun baslasin
+			if (olay.type == SDL_KEYDOWN)
 			{
-				oyunDurumu = 1;
+				if (oyunDurumu == 0)
+				{
+					oyunDurumu = 1;
+				}
+				else if (oyunDurumu == 1)
+				{
+					if (olay.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+					{
+						oyunDurumu = 2;
+					}
+				}
+				else if (oyunDurumu == 2)
+				{
+					oyunDurumu = 1;
+				}
 			}
-			
 		}
 		ekraniBoya(); //cagiriyoruz
 
@@ -171,7 +191,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 
 		if (gemi.can <= 0) // hasarAlma fonksiyonundan sonra geminin canini kontrol ediyoruz
 		{
-			oyunDurumu = 2;
+			oyunDurumu = 3;
 			if (skor > enYuksekSkor)
 			{
 				enYuksekSkor = skor;
@@ -186,7 +206,13 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			canSayisi(&gemi);
 			skorYaz();
 		}
-		else if (oyunDurumu == 2) // oyun sonu ekranini gösteriyoruz
+
+		if (oyunDurumu == 2)
+		{
+			SDL_RenderCopy(ekrancizici, duraklatmaEkrani, NULL, NULL);
+		}
+
+		else if (oyunDurumu == 3) // oyun sonu ekranini gösteriyoruz
 		{
 			SDL_RenderCopy(ekrancizici, oyunSonuEkrani, NULL, NULL);
 			rekoruVeSkoruYaz(); // oyun sonu ekraninda rekoru ve skoru gosteriyoruz
