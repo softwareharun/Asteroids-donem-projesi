@@ -27,6 +27,7 @@ SDL_Texture* planet3 = NULL;
 SDL_Texture* oyunSonuEkrani = NULL;
 SDL_Texture* girisEkrani = NULL;
 SDL_Texture* duraklatmaEkrani = NULL;
+SDL_Texture* kontrollerMenu = NULL;
 //------------EKRANLAR----------------//
 //----------BUTONLAR------------//
 SDL_Texture* btnbasla = NULL;
@@ -38,6 +39,7 @@ SDL_Texture* btndrkltmacikis = NULL;
 SDL_Texture* btnoynsonuanamenu = NULL;
 SDL_Texture* btntekraroyna = NULL;
 SDL_Texture* btncik = NULL;
+SDL_Texture* btngeridon = NULL;
 //-------------BUTONLAR------------//
 TTF_Font* font = NULL;
 
@@ -46,6 +48,7 @@ const int pencereGenisligi = 800;
 int skor = 0;
 int enYuksekSkor = 0;
 EkranDurumlari oyunDurumu = GIRIS_EKRANI;
+bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 
 const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
 
@@ -144,10 +147,19 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	{
 		return false;
 	}
+	kontrollerMenu = IMG_LoadTexture(ekrancizici, "resimler/kontrollerMenu.png");
+	if (kontrollerMenu == NULL)
+	{
+		return false;
+	}
+	btngeridon = IMG_LoadTexture(ekrancizici, "resimler/geridon.png");
+	if (btngeridon == NULL)
+	{
+		return false;
+	}
 
 	return true;
 }
-
 
 void ekraniBoya() // ekrani siyaha boyamayi ve temizleme isini fonksiyonla yaptik
 {
@@ -204,7 +216,6 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	mermiOlustur(mermiler); // mermiyi olusturma fonksiyonunu cagiriyoruz
 	Meteor meteorlar[MAXMETEOR]; //dizi olusturuyoruz
 	meteorOlustur(meteorlar); // cagiriyoruz
-	bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 	SDL_Event olay; //basýlan tuslari tutmamiz icin
 
 	rekoruOku();
@@ -218,30 +229,90 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			{
 				oyunDevamEdiyor = false; // döngüden cikart
 			}
+			if (olay.type == SDL_MOUSEBUTTONDOWN) // mouseye basýldýysa
+			{
+				if (olay.button.button == SDL_BUTTON_LEFT) //sol týka basýldýysa
+				{
+					int tikX = olay.button.x; //konumlari tutuyoruz
+					int tikY = olay.button.y;
+
+					if (oyunDurumu == GIRIS_EKRANI)
+					{
+						if (tikX > 254 && tikX < 554 && tikY > 336 && tikY < 396)
+						{
+							oyunDurumu = OYUN_EKRANI;
+						}
+						if (tikX > 254 && tikX < 554 && tikY > 403 && tikY < 463)
+						{
+							oyunDurumu = KONTROLLER_EKRANI;
+						}
+						if (tikX > 254 && tikX < 554 && tikY > 470 && tikY < 560)
+						{
+							oyunDevamEdiyor = false;
+						}
+					}
+					else if (oyunDurumu == DURAKLATMA_EKRANI)
+					{
+						if (tikX > 227 && tikX < 577 && tikY > 321 && tikY < 381)
+						{
+							oyunDurumu = GIRIS_EKRANI;
+						}
+						if (tikX > 227 && tikX < 577 && tikY > 393 && tikY < 453)
+						{
+							oyunDurumu = OYUN_EKRANI;
+						}
+						if (tikX > 227 && tikX < 577 && tikY > 467 && tikY < 527)
+						{
+							oyunDevamEdiyor = false;
+						}
+					}
+					else if (oyunDurumu == OYUNSONU_EKRANI)
+					{
+						if (tikX > 238 && tikX < 588 && tikY > 400 && tikY < 460)
+						{
+							oyunDurumu = GIRIS_EKRANI;
+						}
+						if (tikX > 238 && tikX < 588 && tikY > 458 && tikY < 518)
+						{
+							oyunDurumu = OYUN_EKRANI;
+						}
+						if (tikX > 238 && tikX < 588 && tikY > 516 && tikY < 576)
+						{
+							oyunDevamEdiyor = false;
+						}
+					}
+					else if (oyunDurumu == KONTROLLER_EKRANI)
+					{
+						if (tikX > 260 && tikX < 510 && tikY > 529 && tikY < 579)
+						{
+							oyunDurumu = GIRIS_EKRANI;
+						}
+					}
+
+				}
+				
+			}
 			if (olay.type == SDL_KEYDOWN)
 			{
-				if (oyunDurumu == GIRIS_EKRANI)
-				{
-					oyunDurumu = OYUN_EKRANI;
-				}
-				else if (oyunDurumu == OYUN_EKRANI)
+				if (oyunDurumu == OYUN_EKRANI)
 				{
 					if (olay.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 					{
 						oyunDurumu = DURAKLATMA_EKRANI;
 					}
 				}
-				else if (oyunDurumu == DURAKLATMA_EKRANI)
-				{
-					oyunDurumu = OYUN_EKRANI;
-				}
 			}
 		}
+
 		ekraniBoya(); //cagiriyoruz
 
 		if (oyunDurumu == GIRIS_EKRANI) // giris ekrani ile baslatiyoruz
 		{
 			girisEkraniniCiz();
+		}
+		if (oyunDurumu == KONTROLLER_EKRANI)
+		{
+			kontrollerMenusuCiz();
 		}
 		
 		if (oyunDurumu == OYUN_EKRANI) // artik ekranimiz 1 den fazla olucagi icin ana oyunu ve diger ekranlari ayirdim

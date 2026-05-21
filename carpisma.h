@@ -8,8 +8,8 @@ typedef enum {
 	GIRIS_EKRANI = 0,
 	OYUN_EKRANI = 1,
 	DURAKLATMA_EKRANI = 2,
-	OYUNSONU_EKRANI = 3
-
+	OYUNSONU_EKRANI = 3,
+	KONTROLLER_EKRANI = 4
 
 }EkranDurumlari;
 
