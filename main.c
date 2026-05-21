@@ -23,16 +23,29 @@ SDL_Texture* meteor3 = NULL;
 SDL_Texture* planet1 = NULL;
 SDL_Texture* planet2 = NULL;
 SDL_Texture* planet3 = NULL;
+//--------------EKRANLAR----------//
 SDL_Texture* oyunSonuEkrani = NULL;
 SDL_Texture* girisEkrani = NULL;
 SDL_Texture* duraklatmaEkrani = NULL;
+//------------EKRANLAR----------------//
+//----------BUTONLAR------------//
+SDL_Texture* btnbasla = NULL;
+SDL_Texture* btnkntrl = NULL;
+SDL_Texture* btncikis = NULL;
+SDL_Texture* btnanamenu = NULL;
+SDL_Texture* btndevamet = NULL;
+SDL_Texture* btndrkltmacikis = NULL;
+SDL_Texture* btnoynsonuanamenu = NULL;
+SDL_Texture* btntekraroyna = NULL;
+SDL_Texture* btncik = NULL;
+//-------------BUTONLAR------------//
 TTF_Font* font = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
 const int pencereGenisligi = 800;
 int skor = 0;
 int enYuksekSkor = 0;
-int oyunDurumu = 0;
+EkranDurumlari oyunDurumu = GIRIS_EKRANI;
 
 const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
 
@@ -86,8 +99,52 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 		printf("Duraklatma ekrani yuklenemedi.. Hata : %s\n", SDL_GetError());
 		return false;
 	}
-	
-	
+	btnbasla = IMG_LoadTexture(ekrancizici, "resimler/basla.png");
+	if (btnbasla == NULL)
+	{
+		return false;
+	}
+	btnkntrl = IMG_LoadTexture(ekrancizici, "resimler/kontroller.png");
+	if (btnkntrl == NULL)
+	{
+		return false;
+	}
+	btncikis = IMG_LoadTexture(ekrancizici, "resimler/cikis.png");
+	if (btncikis == NULL)
+	{
+		return false;
+	}
+	btnanamenu = IMG_LoadTexture(ekrancizici, "resimler/duraklatma_anamenu.png");
+	if (btnanamenu == NULL)
+	{
+		return false;
+	}
+	btndevamet = IMG_LoadTexture(ekrancizici, "resimler/devamet.png");
+	if (btndevamet == NULL)
+	{
+		return false;
+	}
+	btndrkltmacikis = IMG_LoadTexture(ekrancizici, "resimler/duraklatma_cikis.png");
+	if (btndrkltmacikis == NULL)
+	{
+		return false;
+	}
+	btnoynsonuanamenu = IMG_LoadTexture(ekrancizici, "resimler/anamenu.png" );
+	if (btnoynsonuanamenu == NULL)
+	{
+		return false;
+	}
+	btntekraroyna = IMG_LoadTexture(ekrancizici, "resimler/tekraroyna.png");
+	if (btntekraroyna == NULL)
+	{
+		return false;
+	}
+	btncik = IMG_LoadTexture(ekrancizici, "resimler/cik.png");
+	if (btncik == NULL)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -115,6 +172,15 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	SDL_DestroyTexture(oyunSonuEkrani);
 	SDL_DestroyTexture(girisEkrani);
 	SDL_DestroyTexture(duraklatmaEkrani);
+	SDL_DestroyTexture(btnbasla);
+	SDL_DestroyTexture(btnkntrl);
+	SDL_DestroyTexture(btnanamenu);
+	SDL_DestroyTexture(btncikis);
+	SDL_DestroyTexture(btndrkltmacikis);
+	SDL_DestroyTexture(btndevamet);
+	SDL_DestroyTexture(btnoynsonuanamenu);
+	SDL_DestroyTexture(btntekraroyna);
+	SDL_DestroyTexture(btncik);
 	SDL_DestroyRenderer(ekrancizici);//rendereri kapatiyoruz
 	SDL_DestroyWindow(pencere); //olusturdugumuz pencereyi kapatayiyoruz
 	IMG_Quit();//png yi okumayi saglayan motoru durduruyoruz 
@@ -154,31 +220,31 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			}
 			if (olay.type == SDL_KEYDOWN)
 			{
-				if (oyunDurumu == 0)
+				if (oyunDurumu == GIRIS_EKRANI)
 				{
-					oyunDurumu = 1;
+					oyunDurumu = OYUN_EKRANI;
 				}
-				else if (oyunDurumu == 1)
+				else if (oyunDurumu == OYUN_EKRANI)
 				{
 					if (olay.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 					{
-						oyunDurumu = 2;
+						oyunDurumu = DURAKLATMA_EKRANI;
 					}
 				}
-				else if (oyunDurumu == 2)
+				else if (oyunDurumu == DURAKLATMA_EKRANI)
 				{
-					oyunDurumu = 1;
+					oyunDurumu = OYUN_EKRANI;
 				}
 			}
 		}
 		ekraniBoya(); //cagiriyoruz
 
-		if (oyunDurumu == 0) // giris ekrani ile baslatiyoruz
+		if (oyunDurumu == GIRIS_EKRANI) // giris ekrani ile baslatiyoruz
 		{
-			SDL_RenderCopy(ekrancizici, girisEkrani, NULL, NULL);
+			girisEkraniniCiz();
 		}
 		
-		if (oyunDurumu == 1) // artik ekranimiz 1 den fazla olucagi icin ana oyunu ve diger ekranlari ayirdim
+		if (oyunDurumu == OYUN_EKRANI) // artik ekranimiz 1 den fazla olucagi icin ana oyunu ve diger ekranlari ayirdim
 		{
 			
 			gemiyiHareketEttir(&gemi);
@@ -191,7 +257,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 
 		if (gemi.can <= 0) // hasarAlma fonksiyonundan sonra geminin canini kontrol ediyoruz
 		{
-			oyunDurumu = 3;
+			oyunDurumu = OYUNSONU_EKRANI;
 			if (skor > enYuksekSkor)
 			{
 				enYuksekSkor = skor;
@@ -207,14 +273,14 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 			skorYaz();
 		}
 
-		if (oyunDurumu == 2)
+		if (oyunDurumu == DURAKLATMA_EKRANI)
 		{
-			SDL_RenderCopy(ekrancizici, duraklatmaEkrani, NULL, NULL);
+			duraklatmaEkraniCiz();
 		}
 
-		else if (oyunDurumu == 3) // oyun sonu ekranini gösteriyoruz
+		else if (oyunDurumu == OYUNSONU_EKRANI) // oyun sonu ekranini gösteriyoruz
 		{
-			SDL_RenderCopy(ekrancizici, oyunSonuEkrani, NULL, NULL);
+			oyunsonuEkraniCiz();
 			rekoruVeSkoruYaz(); // oyun sonu ekraninda rekoru ve skoru gosteriyoruz
 		}
 

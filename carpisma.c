@@ -128,7 +128,7 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 				if (gemi->can <= 0)
 				{
 					gemi->can = 0;
-					oyunDurumu = 1; // oyun durumunu degistirdim
+					oyunDurumu = OYUNSONU_EKRANI; // oyun durumunu degistirdim
 				}
 			}
 		}

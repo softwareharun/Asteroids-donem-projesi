@@ -124,31 +124,208 @@ void rekoruVeSkoruYaz() // burda ise yazdirma islemi yapiyoruz
         SDL_Color sari = { 255, 215, 0, 255 };
 
         SDL_Surface* skorYuzeyi = TTF_RenderText_Solid(font, sonSkorMetni, beyaz);
-      
+
         SDL_Texture* skorResmi = SDL_CreateTextureFromSurface(ekrancizici, skorYuzeyi);
 
-     
+
         SDL_Rect skorKutusu = { 240, 360, skorYuzeyi->w, skorYuzeyi->h };
 
-      
+
         SDL_RenderCopy(ekrancizici, skorResmi, NULL, &skorKutusu);
 
-       
+
         SDL_FreeSurface(skorYuzeyi);
         SDL_DestroyTexture(skorResmi);
 
         SDL_Surface* rekorYuzeyi = TTF_RenderText_Solid(font, yuksekSkorMetni, sari);
-        
+
         SDL_Texture* rekorResmi = SDL_CreateTextureFromSurface(ekrancizici, rekorYuzeyi);
 
-    
+
         SDL_Rect rekorKutusu = { 360, 360, rekorYuzeyi->w, rekorYuzeyi->h };
 
-       
+
         SDL_RenderCopy(ekrancizici, rekorResmi, NULL, &rekorKutusu);
 
-       
+
         SDL_FreeSurface(rekorYuzeyi);
         SDL_DestroyTexture(rekorResmi);
+    }
+}
+
+void girisEkraniniCiz() 
+{
+    if (girisEkrani != NULL) {
+        SDL_RenderCopy(ekrancizici, girisEkrani, NULL, NULL);
+    }
+
+    int fareX, fareY;
+    SDL_GetMouseState(&fareX, &fareY); //farenin konumunu aliyoruz
+
+    SDL_Rect baslaKutu = { 254, 336, 300, 60 }; 
+
+    if (fareX > baslaKutu.x && fareX < (baslaKutu.x + baslaKutu.w) && fareY > baslaKutu.y && fareY < (baslaKutu.y + baslaKutu.h)) //eger faremiz butonun icindeyse
+    {
+        SDL_Rect yeniBasla = { //yeni buton daha buyuk
+            baslaKutu.x - 10,     
+            baslaKutu.y - 8,    
+            baslaKutu.w + 10,   
+            baslaKutu.h + 10     
+        };
+
+        if (btnbasla != NULL) {
+            SDL_RenderCopy(ekrancizici, btnbasla, NULL, &yeniBasla); //ustune yapistiriyoruz
+        }
+    }
+    SDL_Rect kntrlKutu = { 254, 403, 300, 60 };
+
+    if (fareX > kntrlKutu.x && fareX < (kntrlKutu.x + kntrlKutu.w) && fareY > kntrlKutu.y && fareY < (kntrlKutu.y + kntrlKutu.h))
+    {
+        SDL_Rect yeniKntrl = {
+            kntrlKutu.x - 10,
+            kntrlKutu.y - 8,
+            kntrlKutu.w + 10,
+            kntrlKutu.h + 10
+        };
+        if (btnkntrl != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btnkntrl, NULL, &yeniKntrl);
+        }
+    }
+    SDL_Rect cikisKutu = { 254, 470, 300, 60 };
+
+    if (fareX > cikisKutu.x && fareX < (cikisKutu.x + cikisKutu.w) && fareY > cikisKutu.y && fareY < (cikisKutu.y + cikisKutu.h))
+    {
+        SDL_Rect yeniCikis = {
+            cikisKutu.x - 10,
+            cikisKutu.y - 8,
+            cikisKutu.w + 10,
+            cikisKutu.h + 10
+        };
+        if (btncikis != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btncikis, NULL, &yeniCikis);
+        }
+    }
+}
+
+void duraklatmaEkraniCiz()
+{
+    if (duraklatmaEkrani != NULL)
+    {
+        SDL_RenderCopy(ekrancizici, duraklatmaEkrani, NULL, NULL);
+    }
+
+    int fareX, fareY;
+    SDL_GetMouseState(&fareX, &fareY);
+
+    SDL_Rect anaMenuKutu = { 227, 321, 350, 60 };
+
+    if (fareX > anaMenuKutu.x && fareX < (anaMenuKutu.x + anaMenuKutu.w) && fareY > anaMenuKutu.y && fareY < (anaMenuKutu.y + anaMenuKutu.h)) 
+    {
+        SDL_Rect yeniAnamenu = {
+            anaMenuKutu.x - 10,
+            anaMenuKutu.y - 8,
+            anaMenuKutu.w + 10,
+            anaMenuKutu.h + 10
+        };
+        if (btnanamenu != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btnanamenu, NULL, &yeniAnamenu);
+        }
+    }
+
+    SDL_Rect devametKutu = { 227, 393, 350, 60 };
+
+    if (fareX > devametKutu.x && fareX < (devametKutu.x + devametKutu.w) && fareY > devametKutu.y && fareY < (devametKutu.y + devametKutu.h))
+    {
+        SDL_Rect yenidevamet = {
+            devametKutu.x - 10,
+            devametKutu.y - 8,
+            devametKutu.w + 10,
+            devametKutu.h + 10
+        };
+        if (btndevamet != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btndevamet, NULL, &yenidevamet);
+        }
+    }
+    SDL_Rect drkltmacikisKutu = { 227, 467, 350, 60 };
+
+    if (fareX > drkltmacikisKutu.x && fareX < (drkltmacikisKutu.x + drkltmacikisKutu.w) && fareY > drkltmacikisKutu.y && fareY < (drkltmacikisKutu.y + drkltmacikisKutu.h))
+    {
+        SDL_Rect yenidrkltmacikis = {
+            drkltmacikisKutu.x - 10,
+            drkltmacikisKutu.y - 8,
+            drkltmacikisKutu.w + 10,
+            drkltmacikisKutu.h + 10
+        };
+
+        if (btndrkltmacikis != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btndrkltmacikis, NULL, &yenidrkltmacikis);
+        }
+    }
+}
+
+void oyunsonuEkraniCiz()
+{
+    if (oyunSonuEkrani != NULL)
+    {
+        SDL_RenderCopy(ekrancizici, oyunSonuEkrani, NULL, NULL);
+    }
+
+    int fareX, fareY;
+    SDL_GetMouseState(&fareX, &fareY);
+
+    SDL_Rect oynsonuanamenuKutu = { 238, 400, 350, 60 };
+
+    if (fareX > oynsonuanamenuKutu.x && fareX < (oynsonuanamenuKutu.x + oynsonuanamenuKutu.w) && fareY > oynsonuanamenuKutu.y && fareY < (oynsonuanamenuKutu.y + oynsonuanamenuKutu.h))
+    {
+        SDL_Rect yenioynsonuanamenu = {
+            oynsonuanamenuKutu.x - 15,
+            oynsonuanamenuKutu.y - 12,
+            oynsonuanamenuKutu.w + 7,
+            oynsonuanamenuKutu.h + 7
+        };
+
+        if (btnoynsonuanamenu != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btnoynsonuanamenu, NULL, &yenioynsonuanamenu);
+        }
+    }
+
+    SDL_Rect tekraroynaKutu = { 238, 458, 350, 60 };
+
+    if (fareX > tekraroynaKutu.x && fareX < (tekraroynaKutu.x + tekraroynaKutu.w) && fareY > tekraroynaKutu.y && fareY < (tekraroynaKutu.y + tekraroynaKutu.h))
+    {
+        SDL_Rect yenitekraroyna = {
+            tekraroynaKutu.x - 15,
+            tekraroynaKutu.y - 12,
+            tekraroynaKutu.w + 7,
+            tekraroynaKutu.h + 7
+        };
+
+        if (btntekraroyna != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btntekraroyna, NULL, &yenitekraroyna);
+        }
+    }
+
+    SDL_Rect cikKutu = { 238, 516, 350, 60 };
+
+    if (fareX > cikKutu.x && fareX < (cikKutu.x + cikKutu.w) && fareY > cikKutu.y && fareY < (cikKutu.y + cikKutu.h))
+    {
+        SDL_Rect yenicik = {
+            cikKutu.x - 15,
+            cikKutu.y - 12,
+            cikKutu.w + 7,
+            cikKutu.h + 7
+        };
+
+        if (btncik != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btncik, NULL, &yenicik);
+        }
     }
 }
