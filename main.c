@@ -199,6 +199,31 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	SDL_Quit(); //baþlattýgýmýz sdl lerin hepsini kapatiyoruz
 }
 
+void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfýrlýyoruz
+{
+	gemi->x = (pencereGenisligi / 2.0) - (gemi->gemikutusu.w / 2.0); //gemiyi en ortaya aliyoruz
+	gemi->y = (pencereUzunlugu / 2.0) - (gemi->gemikutusu.h / 2.0);
+
+	gemi->gemikutusu.x = (int)gemi->x;
+	gemi->gemikutusu.y = (int)gemi->y;
+
+	gemi->hizX = 0.0; //diger bilesenleri de sifirliyoruz
+	gemi->hizY = 0.0;
+	gemi->aci = 0.0;
+	gemi->can = 100;
+
+	for (int i = 0; i < MAXMERMI; i++) // tüm mermileri false yapiyoruz
+	{
+		mermiler[i].canli = false;
+	}
+
+	for (int i = 0; i < MAXMETEOR; i++) //meteorlarida
+	{
+		meteorlar[i].canli = false;
+	}
+
+	skor = 0;
+}
 
 	int main(int argc, char* args[]) //mainimizi açýyoruz fakat parantez içlerine dýþardan uygulamayý açarken gelicek olan komutlarýn sayýsýný tutmak icin int argc, dýþardan gelen komutlarýn ne oldugunu tutabilcegimiz bir char pointer dizisi olusturuyoruz.  
 	//pointer þeklinde olusturmamýzýn sebebi ise birden fazla string yapýsýný tutabilmek
@@ -274,6 +299,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 						}
 						if (tikX > 238 && tikX < 588 && tikY > 458 && tikY < 518)
 						{
+							oyunuSýfýrla(&gemi, mermiler, meteorlar);
 							oyunDurumu = OYUN_EKRANI;
 						}
 						if (tikX > 238 && tikX < 588 && tikY > 516 && tikY < 576)

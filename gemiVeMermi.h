@@ -32,6 +32,8 @@ typedef struct {
 	SDL_Rect gemikutusu;// SDL_Rect gemi olan ve geminin baslangıc konumunu belirten structu buraya aldim kutu ile degistirdim
 } Gemi;
 
+
+
 typedef struct { // mermimizin konumlari icin x y acisi icin aci ve merminin hayatta oldugnu kontrol etmek icin canli bulunduran bir struct olusturuyoruz
 	double x, y, aci;
 	bool canli;
