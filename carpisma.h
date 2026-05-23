@@ -14,6 +14,7 @@ typedef enum {
 }EkranDurumlari;
 
 extern EkranDurumlari oyunDurumu;
+extern Mix_Chunk* patlamaSesi;
 
 void meteorVurma(Mermi mermiler[], Meteor meteorlar[]);
 void hasarAlma(Gemi* gemi, Meteor meteorlar[]);

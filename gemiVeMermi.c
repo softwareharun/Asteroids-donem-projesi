@@ -1,4 +1,4 @@
-#include <stdio.h> 
+
 #include "gemiVeMermi.h" 
 
 void gemiOlustur(Gemi* gemi) //gemiyi olusturmayi fonkiyonla yapiyoruz mainin icindeki karmasayi azaltiyoruz
@@ -43,6 +43,18 @@ void gemiyiHareketEttir(Gemi* gemi) // gemi hareketini fonksiyonla yapiyoruz deg
 	{
 		gemi->hizX += sin(radyan) * gemi->itisHizi;  // gemimizin yeni konumunu sin ve cos fonkisyonlari ile tüm yönlere dagýtýyoruz x in sin olma sebebi 0 derecenin kuzeye bakmasi
 		gemi->hizY -= cos(radyan) * gemi->itisHizi;
+
+		if (Mix_Playing(1) == 0) // kanalda ses olup olmadigini kontrol ediyoruz
+		{
+			Mix_PlayChannel(1, gazSesi, -1); 
+		}
+	}
+	else
+	{
+		if (Mix_Playing(1) == 1)
+		{
+			Mix_HaltChannel(1); // sesi kes
+		}
 	}
 
 	gemi->x += gemi->hizX;
@@ -112,11 +124,15 @@ void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin maind
 				mermiler[i].y = gemi->y + 28;
 				mermiler[i].aci = gemi->aci; // geminin baktigi yönle esitliyoruz
 				mermiler[i].canli = true; // o sýradaki mermiyi 1 yaparak atesliyoruz
-				gemi->atisSuresi = 20;
+				gemi->atisSuresi = 28;
 				mermiler[i].mermikutusu.x = (int)mermiler[i].x; //baska fonksiyonu beklemeden burada mermiyi geminin ucunda baslatiyoruz ve artik mermi meteora carptikdan sonra o konumda kalmasini engelliyoruz
 				mermiler[i].mermikutusu.y = (int)mermiler[i].y;
 				mermiler[i].mermikutusu.w = 16; //mermi boyutlari
 				mermiler[i].mermikutusu.h = 16;
+
+				int mermiKanali = (rand() % 10) + 10;
+				Mix_PlayChannel(mermiKanali, mermiSesi, 0);
+
 				break;
 			}
 		}

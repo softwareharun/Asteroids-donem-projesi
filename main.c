@@ -5,6 +5,7 @@
 #include <math.h> //sin ve cos fonkisyonlarýný eklemek icin
 #include <SDL_ttf.h> //ekrana font yazdirmak icin
 #include <time.h> // rastgele sayi uretmek icin
+#include <SDL_mixer.h>  //sesleri ekleyebilmek icin
 
 #include "gemiVeMermi.h"
 #include "meteor.h"
@@ -15,14 +16,17 @@
 
 SDL_Window* pencere = NULL; //penceremizi tanýmlýyoruz bunlarý pointer ile tanýmlama sebebimiz bunlarýn aslýnda devasa bir struck yapýsý olmasýdýr main fonksiyonumuzda her çaðýrdýgýmýzda hepsinin çaðrýlmasý degil sadece o konumun gönderilmesidir. null atama sebebimiz ise pointer tanýmladýgmýz icin bize boþ bir adres tutmasýný saglamak.
 SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
+SDL_Texture* arkaPlanResmi = NULL;
 SDL_Texture* uzayGemisi = NULL;//texture de renderer gibi ekran karti kullanir ve daha hizlidir saydam halde getirebilmek ve fotografi döndürebilmek icin kullaniyoruz
 SDL_Texture* mermi = NULL; //mermi olusturuyoruz
+//---------METEORLAR------------//
 SDL_Texture* meteor1 = NULL;
 SDL_Texture* meteor2 = NULL;
 SDL_Texture* meteor3 = NULL;
 SDL_Texture* planet1 = NULL;
 SDL_Texture* planet2 = NULL;
 SDL_Texture* planet3 = NULL;
+//---------METEORLAR------------//
 //--------------EKRANLAR----------// 
 SDL_Texture* oyunSonuEkrani = NULL;
 SDL_Texture* girisEkrani = NULL;
@@ -41,7 +45,14 @@ SDL_Texture* btntekraroyna = NULL;
 SDL_Texture* btncik = NULL;
 SDL_Texture* btngeridon = NULL;
 //-------------BUTONLAR------------//
-SDL_Texture* arkaPlanResmi = NULL;
+//-------------------SESLER----------------//
+Mix_Chunk* mermiSesi = NULL;
+Mix_Chunk* patlamaSesi = NULL;
+Mix_Chunk* gazSesi = NULL;
+Mix_Chunk* butonSesi = NULL;
+Mix_Music* arkaPlanMuzigi = NULL;
+//-------------SESLER-------------//
+
 TTF_Font* font = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
@@ -52,6 +63,8 @@ EkranDurumlari oyunDurumu = GIRIS_EKRANI;
 bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 bool tamEkran = false;
 int fareX, fareY; // tam ekrana geldiðinde buton etkilesimini düzeltmek icin
+int aktifButon = 0;
+
 
 const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
 
@@ -166,6 +179,37 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	{
 		return false;
 	}
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) // audio yu baslatiyoruz sesin kalitesini derinliðini haporlor kanalýný ve gecikmesini ayarliyoruz
+	{
+		printf("Mixer baslatilamadi.. Hata : %s\n", Mix_GetError());
+	}
+	Mix_AllocateChannels(32); // sesleri farkli kanallarda tutmak icin 32 kanal aciyoruz
+	mermiSesi = Mix_LoadWAV("sesler/lazer.wav");
+	if (mermiSesi == NULL)
+	{
+		return false;
+	}
+	patlamaSesi = Mix_LoadWAV("sesler/patlama.wav");
+	if (patlamaSesi == NULL)
+	{
+		return false;
+	}
+	gazSesi = Mix_LoadWAV("sesler/gaz.wav");
+	if (gazSesi == NULL)
+	{
+		return false;
+	}
+	butonSesi = Mix_LoadWAV("sesler/click.wav");
+	if (butonSesi == NULL)
+	{
+		return false;
+	}
+	arkaPlanMuzigi = Mix_LoadMUS("sesler/arkaplansesi.mp3");
+	if (arkaPlanMuzigi == NULL) {
+		return false;
+	}
+	Mix_VolumeChunk(gazSesi, 40); //istedigimiz bir sesin ses miktarini ayarliyoruz
+	Mix_VolumeMusic(50); // arkaplan müzigi ses miktari
 
 	return true;
 }
@@ -204,6 +248,11 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	SDL_DestroyTexture(btnoynsonuanamenu);
 	SDL_DestroyTexture(btntekraroyna);
 	SDL_DestroyTexture(btncik);
+	Mix_FreeChunk(mermiSesi); 
+	Mix_FreeChunk(patlamaSesi);
+	Mix_FreeChunk(gazSesi);
+	Mix_FreeMusic(arkaPlanMuzigi);
+	Mix_CloseAudio();
 	SDL_DestroyRenderer(ekrancizici);//rendereri kapatiyoruz
 	SDL_DestroyWindow(pencere); //olusturdugumuz pencereyi kapatayiyoruz
 	IMG_Quit();//png yi okumayi saglayan motoru durduruyoruz 
@@ -256,6 +305,8 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 
 	rekoruOku();
 	
+	Mix_PlayMusic(arkaPlanMuzigi, -1); // arkaplan sesini baslatiyoruz sonsuz loopda
+
 	while (oyunDevamEdiyor) //oyun döngüsünü aciyoruz
 
 	{

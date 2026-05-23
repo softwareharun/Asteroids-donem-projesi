@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
+#include <SDL_mixer.h>
 
 #define PI 3.14159265
 #define MAXMERMI 20
@@ -16,7 +17,8 @@ extern const int pencereGenisligi;
 extern SDL_Renderer* ekrancizici;//iþlemciyi kullanan surface yerine artik ekrankartini kullanan renderer kullaniyoruz surface ile yaptýgýmýz gemiyi döndüremiyoduk artýk döndürebilecegiz ve fotograf yukleyecegimiz icin renderer bizim icin daha mantikli buradaki ekrancizici degiskenimiz asagidaki tüm islemleri yapan bir mekanizma gibidir
 extern SDL_Texture* uzayGemisi;//texture de renderer gibi ekran karti kullanir ve daha hizlidir saydam halde getirebilmek ve fotografi döndürebilmek icin kullaniyoruz
 extern SDL_Texture* mermi; //mermi olusturuyoruz
-
+extern Mix_Chunk* mermiSesi;
+extern Mix_Chunk* gazSesi;
 extern const Uint8* tuslar;
 
 typedef struct {

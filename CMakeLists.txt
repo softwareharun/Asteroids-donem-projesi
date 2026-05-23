@@ -25,7 +25,7 @@ add_executable(${PROJECT_NAME} WIN32
 target_link_directories(${PROJECT_NAME} PRIVATE ${SDL2_LIB_DIR})
 
 # Bütün kütüphaneleri (SDL2, Image ve TTF) tek bir satýrda projeye baðlýyoruz
-target_link_libraries(${PROJECT_NAME} SDL2 SDL2main SDL2_image SDL2_ttf)
+target_link_libraries(${PROJECT_NAME} SDL2 SDL2main SDL2_image SDL2_ttf SDL2_mixer)
 
 
 # --- OTOMATÝK DLL KOPYALAMA ÝÞLEMLERÝ ---

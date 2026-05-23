@@ -19,6 +19,9 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 						mermiler[i].canli = false;
 						meteorlar[j].canli = false;
 
+						int patlamaKanali = (rand() % 10) + 20;
+						Mix_PlayChannel(patlamaKanali, patlamaSesi, 0);
+
 						skor += 10;
 
 						if (meteorlar[j].meteorKutusu.w > 70) // meteor kücük degilse
@@ -128,6 +131,7 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 				if (gemi->can <= 0)
 				{
 					gemi->can = 0;
+					Mix_HaltChannel(1);
 					oyunDurumu = OYUNSONU_EKRANI; // oyun durumunu degistirdim
 				}
 			}

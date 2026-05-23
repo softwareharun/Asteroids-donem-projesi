@@ -159,9 +159,16 @@ void girisEkraniniCiz()
         SDL_RenderCopy(ekrancizici, girisEkrani, NULL, NULL);
     }
     SDL_Rect baslaKutu = { 254, 336, 300, 60 }; 
+    SDL_Rect kntrlKutu = { 254, 403, 300, 60 };
+    SDL_Rect cikisKutu = { 254, 470, 300, 60 };
 
     if (fareX > baslaKutu.x && fareX < (baslaKutu.x + baslaKutu.w) && fareY > baslaKutu.y && fareY < (baslaKutu.y + baslaKutu.h)) //eger faremiz butonun icindeyse
     {
+        if (aktifButon != 1)
+        {
+            Mix_PlayChannel(3, butonSesi, 0); // hani kanalı kullancagini hangi ses oldugunu ve kac kez calıcagini belirliyoruz
+            aktifButon = 1;
+        }
         SDL_Rect yeniBasla = { //yeni buton daha buyuk
             baslaKutu.x - 10,     
             baslaKutu.y - 8,    
@@ -173,10 +180,13 @@ void girisEkraniniCiz()
             SDL_RenderCopy(ekrancizici, btnbasla, NULL, &yeniBasla); //ustune yapistiriyoruz
         }
     }
-    SDL_Rect kntrlKutu = { 254, 403, 300, 60 };
-
-    if (fareX > kntrlKutu.x && fareX < (kntrlKutu.x + kntrlKutu.w) && fareY > kntrlKutu.y && fareY < (kntrlKutu.y + kntrlKutu.h))
+    else if (fareX > kntrlKutu.x && fareX < (kntrlKutu.x + kntrlKutu.w) && fareY > kntrlKutu.y && fareY < (kntrlKutu.y + kntrlKutu.h))
     {
+        if (aktifButon != 2)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 2; 
+        }
         SDL_Rect yeniKntrl = {
             kntrlKutu.x - 10,
             kntrlKutu.y - 8,
@@ -188,10 +198,13 @@ void girisEkraniniCiz()
             SDL_RenderCopy(ekrancizici, btnkntrl, NULL, &yeniKntrl);
         }
     }
-    SDL_Rect cikisKutu = { 254, 470, 300, 60 };
-
-    if (fareX > cikisKutu.x && fareX < (cikisKutu.x + cikisKutu.w) && fareY > cikisKutu.y && fareY < (cikisKutu.y + cikisKutu.h))
+    else if (fareX > cikisKutu.x && fareX < (cikisKutu.x + cikisKutu.w) && fareY > cikisKutu.y && fareY < (cikisKutu.y + cikisKutu.h))
     {
+        if (aktifButon != 3)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 3; 
+        }
         SDL_Rect yeniCikis = {
             cikisKutu.x - 10,
             cikisKutu.y - 8,
@@ -203,6 +216,10 @@ void girisEkraniniCiz()
             SDL_RenderCopy(ekrancizici, btncikis, NULL, &yeniCikis);
         }
     }
+    else
+    {
+        aktifButon = 0;
+    }
 }
 
 void duraklatmaEkraniCiz()
@@ -211,10 +228,19 @@ void duraklatmaEkraniCiz()
     {
         SDL_RenderCopy(ekrancizici, duraklatmaEkrani, NULL, NULL);
     }
+
     SDL_Rect anaMenuKutu = { 227, 321, 350, 60 };
+    SDL_Rect devametKutu = { 227, 393, 350, 60 };
+    SDL_Rect drkltmacikisKutu = { 227, 467, 350, 60 };
 
     if (fareX > anaMenuKutu.x && fareX < (anaMenuKutu.x + anaMenuKutu.w) && fareY > anaMenuKutu.y && fareY < (anaMenuKutu.y + anaMenuKutu.h)) 
     {
+        if (aktifButon != 4)
+        {
+            
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 4; 
+        }
         SDL_Rect yeniAnamenu = {
             anaMenuKutu.x - 10,
             anaMenuKutu.y - 8,
@@ -227,10 +253,15 @@ void duraklatmaEkraniCiz()
         }
     }
 
-    SDL_Rect devametKutu = { 227, 393, 350, 60 };
 
-    if (fareX > devametKutu.x && fareX < (devametKutu.x + devametKutu.w) && fareY > devametKutu.y && fareY < (devametKutu.y + devametKutu.h))
+    else if (fareX > devametKutu.x && fareX < (devametKutu.x + devametKutu.w) && fareY > devametKutu.y && fareY < (devametKutu.y + devametKutu.h))
     {
+        if (aktifButon != 5)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 5;
+        }
+       
         SDL_Rect yenidevamet = {
             devametKutu.x - 10,
             devametKutu.y - 8,
@@ -242,10 +273,15 @@ void duraklatmaEkraniCiz()
             SDL_RenderCopy(ekrancizici, btndevamet, NULL, &yenidevamet);
         }
     }
-    SDL_Rect drkltmacikisKutu = { 227, 467, 350, 60 };
 
-    if (fareX > drkltmacikisKutu.x && fareX < (drkltmacikisKutu.x + drkltmacikisKutu.w) && fareY > drkltmacikisKutu.y && fareY < (drkltmacikisKutu.y + drkltmacikisKutu.h))
+    else if (fareX > drkltmacikisKutu.x && fareX < (drkltmacikisKutu.x + drkltmacikisKutu.w) && fareY > drkltmacikisKutu.y && fareY < (drkltmacikisKutu.y + drkltmacikisKutu.h))
     {
+        if (aktifButon != 6)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 6;
+        }
+            
         SDL_Rect yenidrkltmacikis = {
             drkltmacikisKutu.x - 10,
             drkltmacikisKutu.y - 8,
@@ -258,6 +294,10 @@ void duraklatmaEkraniCiz()
             SDL_RenderCopy(ekrancizici, btndrkltmacikis, NULL, &yenidrkltmacikis);
         }
     }
+    else
+    {
+        aktifButon = 0;
+    }
 }
 
 void oyunsonuEkraniCiz()
@@ -267,9 +307,16 @@ void oyunsonuEkraniCiz()
         SDL_RenderCopy(ekrancizici, oyunSonuEkrani, NULL, NULL);
     }
     SDL_Rect oynsonuanamenuKutu = { 238, 400, 350, 60 };
+    SDL_Rect tekraroynaKutu = { 238, 458, 350, 60 };
+    SDL_Rect cikKutu = { 238, 516, 350, 60 };
 
     if (fareX > oynsonuanamenuKutu.x && fareX < (oynsonuanamenuKutu.x + oynsonuanamenuKutu.w) && fareY > oynsonuanamenuKutu.y && fareY < (oynsonuanamenuKutu.y + oynsonuanamenuKutu.h))
     {
+        if (aktifButon != 7)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 7;
+        }
         SDL_Rect yenioynsonuanamenu = {
             oynsonuanamenuKutu.x - 15,
             oynsonuanamenuKutu.y - 12,
@@ -282,11 +329,13 @@ void oyunsonuEkraniCiz()
             SDL_RenderCopy(ekrancizici, btnoynsonuanamenu, NULL, &yenioynsonuanamenu);
         }
     }
-
-    SDL_Rect tekraroynaKutu = { 238, 458, 350, 60 };
-
-    if (fareX > tekraroynaKutu.x && fareX < (tekraroynaKutu.x + tekraroynaKutu.w) && fareY > tekraroynaKutu.y && fareY < (tekraroynaKutu.y + tekraroynaKutu.h))
+    else if (fareX > tekraroynaKutu.x && fareX < (tekraroynaKutu.x + tekraroynaKutu.w) && fareY > tekraroynaKutu.y && fareY < (tekraroynaKutu.y + tekraroynaKutu.h))
     {
+        if (aktifButon != 8)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 8;
+        }
         SDL_Rect yenitekraroyna = {
             tekraroynaKutu.x - 15,
             tekraroynaKutu.y - 12,
@@ -299,11 +348,13 @@ void oyunsonuEkraniCiz()
             SDL_RenderCopy(ekrancizici, btntekraroyna, NULL, &yenitekraroyna);
         }
     }
-
-    SDL_Rect cikKutu = { 238, 516, 350, 60 };
-
-    if (fareX > cikKutu.x && fareX < (cikKutu.x + cikKutu.w) && fareY > cikKutu.y && fareY < (cikKutu.y + cikKutu.h))
+    else if (fareX > cikKutu.x && fareX < (cikKutu.x + cikKutu.w) && fareY > cikKutu.y && fareY < (cikKutu.y + cikKutu.h))
     {
+        if (aktifButon != 9)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 9;
+        }
         SDL_Rect yenicik = {
             cikKutu.x - 15,
             cikKutu.y - 12,
@@ -315,6 +366,10 @@ void oyunsonuEkraniCiz()
         {
             SDL_RenderCopy(ekrancizici, btncik, NULL, &yenicik);
         }
+    }
+    else
+    {
+        aktifButon = 0;
     }
 }
 
@@ -328,6 +383,11 @@ void kontrollerMenusuCiz()
 
     if (fareX > geriDonKutu.x && fareX < (geriDonKutu.x + geriDonKutu.w) && fareY > geriDonKutu.y && fareY < (geriDonKutu.y + geriDonKutu.h))
     {
+        if (aktifButon != 10)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 10;
+        }
         SDL_Rect yeniGeriDon = {
             geriDonKutu.x - 10,
             geriDonKutu.y - 5,
@@ -339,6 +399,10 @@ void kontrollerMenusuCiz()
         {
             SDL_RenderCopy(ekrancizici, btngeridon, NULL, &yeniGeriDon);
         }
+    }
+    else
+    {
+        aktifButon = 0;
     }
 
 }
