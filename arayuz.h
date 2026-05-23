@@ -2,7 +2,7 @@
 #define arayuz_h
 
 #include "gemiVeMermi.h"
-
+extern SDL_Window* pencere;
 extern SDL_Renderer* ekrancizici;
 extern TTF_Font* font;
 extern SDL_Texture* oyunSonuEkrani;
@@ -14,6 +14,8 @@ extern int enYuksekSkor;
 extern const int pencereGenisligi;
 extern const int pencereUzunlugu;
 extern bool oyunDevamEdiyor;
+extern int fareX;
+extern int fareY;
 extern SDL_Texture* btnbasla;
 extern SDL_Texture* btnkntrl;
 extern SDL_Texture* btncikis;

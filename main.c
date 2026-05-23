@@ -23,13 +23,13 @@ SDL_Texture* meteor3 = NULL;
 SDL_Texture* planet1 = NULL;
 SDL_Texture* planet2 = NULL;
 SDL_Texture* planet3 = NULL;
-//--------------EKRANLAR----------//
+//--------------EKRANLAR----------// 
 SDL_Texture* oyunSonuEkrani = NULL;
 SDL_Texture* girisEkrani = NULL;
 SDL_Texture* duraklatmaEkrani = NULL;
 SDL_Texture* kontrollerMenu = NULL;
-//------------EKRANLAR----------------//
-//----------BUTONLAR------------//
+//------------EKRANLAR----------------// 
+//----------BUTONLAR------------// 
 SDL_Texture* btnbasla = NULL;
 SDL_Texture* btnkntrl = NULL;
 SDL_Texture* btncikis = NULL;
@@ -41,6 +41,7 @@ SDL_Texture* btntekraroyna = NULL;
 SDL_Texture* btncik = NULL;
 SDL_Texture* btngeridon = NULL;
 //-------------BUTONLAR------------//
+SDL_Texture* arkaPlanResmi = NULL;
 TTF_Font* font = NULL;
 
 const int pencereUzunlugu = 600; //const(baska yerde degistirilmemesi icin) olarak pencerenin uzunlugunu ve genisligini tanimliyoruz 
@@ -49,6 +50,8 @@ int skor = 0;
 int enYuksekSkor = 0;
 EkranDurumlari oyunDurumu = GIRIS_EKRANI;
 bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
+bool tamEkran = false;
+int fareX, fareY; // tam ekrana geldiðinde buton etkilesimini düzeltmek icin
 
 const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
 
@@ -72,7 +75,7 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 		printf("Font dosyasi bulunamadi.. Hata: %s\n", TTF_GetError());
 	
 	}
-	pencere = SDL_CreateWindow("AsteroidsGame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pencereGenisligi, pencereUzunlugu, SDL_WINDOW_SHOWN); //penceremizi olusturuyoruz ilk parametremiz pencerenin üst cugubunda yazýcak olan isim, ikincisi pencerenin yatay konumda nerden baþlayacagý, üçüncüsü dikey konumda, dört ve besinciler ise pencremizin uzunlugu ve genisligi, sdl window shown yazarak da olusturur olusturmaz pencerenin açýlmasýný saglamak.
+	pencere = SDL_CreateWindow("AsteroidsGame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, pencereGenisligi, pencereUzunlugu, SDL_WINDOW_SHOWN); //penceremizi olusturuyoruz ilk parametremiz pencerenin üst cugubunda yazýcak olan isim, ikincisi pencerenin yatay konumda nerden baþlayacagý, üçüncüsü dikey konumda, dört ve besinciler ise pencremizin uzunlugu ve genisligi, sdl window shown yazarak da olusturur olusturmaz pencerenin açýlmasýný saglamak. tam ekran tusunu ekledim
 	if (pencere == NULL)//pencere acildi mi kontrol ediyoruz
 	{
 		printf("Pencere olusturualamdi... Hata :%s\n", SDL_GetError()); //ayný sekilde pencere acilamama durumunda hatanin sebebini almak icin 
@@ -84,6 +87,7 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 		printf("Renderer olusturulamadi.. Hata :%s\n", SDL_GetError());
 		return false;
 	}
+	SDL_RenderSetLogicalSize(ekrancizici, pencereGenisligi, pencereUzunlugu); // tam ekrana gecildiðinde oranlari bozmadan her seyi büyütüyoruz
 	oyunSonuEkrani = IMG_LoadTexture(ekrancizici, "resimler/gameover.png"); //oyun sonu ekranini tanimladim
 	if (oyunSonuEkrani == NULL) 
 	{
@@ -157,14 +161,21 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	{
 		return false;
 	}
+	arkaPlanResmi = IMG_LoadTexture(ekrancizici, "resimler/arkaplan.png");
+	if (arkaPlanResmi == NULL)
+	{
+		return false;
+	}
 
 	return true;
 }
 
 void ekraniBoya() // ekrani siyaha boyamayi ve temizleme isini fonksiyonla yaptik
 {
-	SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // bu fonksiyonla rengi ve þeffaflýgý belirliyoruz ilk parametre hangi rendererin iþ yaptýgý.
 	SDL_RenderClear(ekrancizici);//burda ise hepsini boyuyoruz
+	SDL_SetRenderDrawColor(ekrancizici, 0, 0, 0, 255); // tam ekrandaki kenarlari siyah yapiyoruz
+	SDL_RenderClear(ekrancizici);
+	SDL_RenderCopy(ekrancizici, arkaPlanResmi, NULL, NULL);
 }
 
 void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bunu çaðýrmamýz yeticek
@@ -207,7 +218,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 	gemi->gemikutusu.x = (int)gemi->x;
 	gemi->gemikutusu.y = (int)gemi->y;
 
-	gemi->hizX = 0.0; //diger bilesenleri de sifirliyoruz
+	gemi->hizX = 0.0; //diger bilesenleri de sifirliyoruzgit
 	gemi->hizY = 0.0;
 	gemi->aci = 0.0;
 	gemi->can = 100;
@@ -253,6 +264,11 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 			if (olay.type == SDL_QUIT) // eger kapatma tusuna basilirsa 
 			{
 				oyunDevamEdiyor = false; // döngüden cikart
+			}
+			if (olay.type == SDL_MOUSEMOTION) // mouse hareketlerini degiskene atýyoruz artik fonksiyonda tanimlamadik
+			{
+				fareX = olay.motion.x;
+				fareY = olay.motion.y;
 			}
 			if (olay.type == SDL_MOUSEBUTTONDOWN) // mouseye basýldýysa
 			{
@@ -300,6 +316,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 						if (tikX > 238 && tikX < 588 && tikY > 458 && tikY < 518)
 						{
 							oyunuSýfýrla(&gemi, mermiler, meteorlar);
+
 							oyunDurumu = OYUN_EKRANI;
 						}
 						if (tikX > 238 && tikX < 588 && tikY > 516 && tikY < 576)
@@ -309,7 +326,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 					}
 					else if (oyunDurumu == KONTROLLER_EKRANI)
 					{
-						if (tikX > 260 && tikX < 510 && tikY > 529 && tikY < 579)
+						if (tikX > 260 && tikX < 510 && tikY > 540 && tikY < 590)
 						{
 							oyunDurumu = GIRIS_EKRANI;
 						}
@@ -325,6 +342,18 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 					if (olay.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 					{
 						oyunDurumu = DURAKLATMA_EKRANI;
+					}
+				}
+				if (olay.key.keysym.scancode == SDL_SCANCODE_F11) // f11 ile tam ekrana gecis
+				{
+					tamEkran = !tamEkran;
+					if (tamEkran == true)
+					{
+						SDL_SetWindowFullscreen(pencere, SDL_WINDOW_FULLSCREEN_DESKTOP); // tam ekrana geciriyoruz
+					}
+					if (tamEkran == false)
+					{
+						SDL_SetWindowFullscreen(pencere, 0);
 					}
 				}
 			}

@@ -158,10 +158,6 @@ void girisEkraniniCiz()
     if (girisEkrani != NULL) {
         SDL_RenderCopy(ekrancizici, girisEkrani, NULL, NULL);
     }
-
-    int fareX, fareY;
-    SDL_GetMouseState(&fareX, &fareY); //farenin konumunu aliyoruz
-  
     SDL_Rect baslaKutu = { 254, 336, 300, 60 }; 
 
     if (fareX > baslaKutu.x && fareX < (baslaKutu.x + baslaKutu.w) && fareY > baslaKutu.y && fareY < (baslaKutu.y + baslaKutu.h)) //eger faremiz butonun icindeyse
@@ -215,10 +211,6 @@ void duraklatmaEkraniCiz()
     {
         SDL_RenderCopy(ekrancizici, duraklatmaEkrani, NULL, NULL);
     }
-
-    int fareX, fareY;
-    SDL_GetMouseState(&fareX, &fareY);
-
     SDL_Rect anaMenuKutu = { 227, 321, 350, 60 };
 
     if (fareX > anaMenuKutu.x && fareX < (anaMenuKutu.x + anaMenuKutu.w) && fareY > anaMenuKutu.y && fareY < (anaMenuKutu.y + anaMenuKutu.h)) 
@@ -274,10 +266,6 @@ void oyunsonuEkraniCiz()
     {
         SDL_RenderCopy(ekrancizici, oyunSonuEkrani, NULL, NULL);
     }
-
-    int fareX, fareY;
-    SDL_GetMouseState(&fareX, &fareY);
-
     SDL_Rect oynsonuanamenuKutu = { 238, 400, 350, 60 };
 
     if (fareX > oynsonuanamenuKutu.x && fareX < (oynsonuanamenuKutu.x + oynsonuanamenuKutu.w) && fareY > oynsonuanamenuKutu.y && fareY < (oynsonuanamenuKutu.y + oynsonuanamenuKutu.h))
@@ -336,19 +324,15 @@ void kontrollerMenusuCiz()
     {
         SDL_RenderCopy(ekrancizici, kontrollerMenu, NULL, NULL);
     }
-
-    int fareX, fareY;
-    SDL_GetMouseState(&fareX, &fareY);
-
-    SDL_Rect geriDonKutu = { 260, 529, 250, 50 };
+    SDL_Rect geriDonKutu = { 260, 540, 250, 50 };
 
     if (fareX > geriDonKutu.x && fareX < (geriDonKutu.x + geriDonKutu.w) && fareY > geriDonKutu.y && fareY < (geriDonKutu.y + geriDonKutu.h))
     {
         SDL_Rect yeniGeriDon = {
             geriDonKutu.x - 10,
-            geriDonKutu.y - 8,
-            geriDonKutu.w + 10,
-            geriDonKutu.h + 10
+            geriDonKutu.y - 5,
+            geriDonKutu.w + 6,
+            geriDonKutu.h + 6
         };
 
         if (btngeridon != NULL)
