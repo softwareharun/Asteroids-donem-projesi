@@ -30,6 +30,7 @@ extern SDL_Texture* btnoynsonuanamenu;
 extern SDL_Texture* btntekraroyna;
 extern SDL_Texture* btncik;
 extern SDL_Texture* btngeridon;
+extern SDL_Texture* btnses;
 extern Mix_Chunk* butonSesi;
 void canBari(Gemi* gemi);
 void canSayisi(Gemi* gemi);

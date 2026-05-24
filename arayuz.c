@@ -161,6 +161,7 @@ void girisEkraniniCiz()
     SDL_Rect baslaKutu = { 254, 336, 300, 60 }; 
     SDL_Rect kntrlKutu = { 254, 403, 300, 60 };
     SDL_Rect cikisKutu = { 254, 470, 300, 60 };
+    SDL_Rect sesKutu = { 19, 19, 50, 50 };
 
     if (fareX > baslaKutu.x && fareX < (baslaKutu.x + baslaKutu.w) && fareY > baslaKutu.y && fareY < (baslaKutu.y + baslaKutu.h)) //eger faremiz butonun icindeyse
     {
@@ -216,6 +217,24 @@ void girisEkraniniCiz()
             SDL_RenderCopy(ekrancizici, btncikis, NULL, &yeniCikis);
         }
     }
+    else if (fareX > sesKutu.x && fareX < (sesKutu.x + sesKutu.w) && fareY > sesKutu.y && fareY < (sesKutu.y + sesKutu.h))
+    {
+        if (aktifButon != 11)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 11;
+        }
+        SDL_Rect yeniSes = {
+            sesKutu.x - 2,
+            sesKutu.y - 2,
+            sesKutu.w + 5,
+            sesKutu.h + 5
+        };
+        if (btnses != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btnses, NULL, &yeniSes);
+        }
+    }
     else
     {
         aktifButon = 0;
@@ -232,6 +251,7 @@ void duraklatmaEkraniCiz()
     SDL_Rect anaMenuKutu = { 227, 321, 350, 60 };
     SDL_Rect devametKutu = { 227, 393, 350, 60 };
     SDL_Rect drkltmacikisKutu = { 227, 467, 350, 60 };
+    SDL_Rect drkltmasesKutu = { 16, 16, 50, 50 };
 
     if (fareX > anaMenuKutu.x && fareX < (anaMenuKutu.x + anaMenuKutu.w) && fareY > anaMenuKutu.y && fareY < (anaMenuKutu.y + anaMenuKutu.h)) 
     {
@@ -292,6 +312,24 @@ void duraklatmaEkraniCiz()
         if (btndrkltmacikis != NULL)
         {
             SDL_RenderCopy(ekrancizici, btndrkltmacikis, NULL, &yenidrkltmacikis);
+        }
+    }
+    else if (fareX > drkltmasesKutu.x && fareX < (drkltmasesKutu.x + drkltmasesKutu.w) && fareY > drkltmasesKutu.y && fareY < (drkltmasesKutu.y + drkltmasesKutu.h))
+    {
+        if (aktifButon != 12)
+        {
+            Mix_PlayChannel(3, butonSesi, 0);
+            aktifButon = 12;
+        }
+        SDL_Rect yenidrkltmaSes = {
+            drkltmasesKutu.x - 2,
+            drkltmasesKutu.y - 2,
+            drkltmasesKutu.w + 7,
+            drkltmasesKutu.h + 7
+        };
+        if (btnses != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btnses, NULL, &yenidrkltmaSes);
         }
     }
     else

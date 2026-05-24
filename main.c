@@ -44,6 +44,7 @@ SDL_Texture* btnoynsonuanamenu = NULL;
 SDL_Texture* btntekraroyna = NULL;
 SDL_Texture* btncik = NULL;
 SDL_Texture* btngeridon = NULL;
+SDL_Texture* btnses = NULL;
 //-------------BUTONLAR------------//
 //-------------------SESLER----------------//
 Mix_Chunk* mermiSesi = NULL;
@@ -62,6 +63,7 @@ int enYuksekSkor = 0;
 EkranDurumlari oyunDurumu = GIRIS_EKRANI;
 bool oyunDevamEdiyor = true; //oyun döngüsünü kontrol etmek icin
 bool tamEkran = false;
+bool sesAcik = true;
 int fareX, fareY; // tam ekrana geldiðinde buton etkilesimini düzeltmek icin
 int aktifButon = 0;
 
@@ -171,6 +173,11 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	}
 	btngeridon = IMG_LoadTexture(ekrancizici, "resimler/geridon.png");
 	if (btngeridon == NULL)
+	{
+		return false;
+	}
+	btnses = IMG_LoadTexture(ekrancizici, "resimler/btnses.png");
+	if (btnses == NULL)
 	{
 		return false;
 	}
@@ -332,6 +339,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 					{
 						if (tikX > 254 && tikX < 554 && tikY > 336 && tikY < 396)
 						{
+							oyunuSýfýrla(&gemi, mermiler, meteorlar);
 							oyunDurumu = OYUN_EKRANI;
 						}
 						if (tikX > 254 && tikX < 554 && tikY > 403 && tikY < 463)
@@ -341,6 +349,21 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 						if (tikX > 254 && tikX < 554 && tikY > 470 && tikY < 560)
 						{
 							oyunDevamEdiyor = false;
+						}
+						if (tikX > 19 && tikX < 69 && tikY > 19 && tikY < 69)
+						{
+							sesAcik = !sesAcik;
+							if (sesAcik == false)
+							{
+								Mix_Volume(-1, 0);
+								Mix_VolumeMusic(0);
+							}
+							if (sesAcik == true)
+							{
+								Mix_Volume(-1, 128);
+								Mix_Volume(1, 40);
+								Mix_VolumeMusic(50);
+							}
 						}
 					}
 					else if (oyunDurumu == DURAKLATMA_EKRANI)
@@ -356,6 +379,21 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 						if (tikX > 227 && tikX < 577 && tikY > 467 && tikY < 527)
 						{
 							oyunDevamEdiyor = false;
+						}
+						if (tikX > 16 && tikX < 66 && tikY > 16 && tikY < 66)
+						{
+							sesAcik = !sesAcik;
+							if (sesAcik == false)
+							{
+								Mix_Volume(-1, 0);
+								Mix_VolumeMusic(0);
+							}
+							if (sesAcik == true)
+							{
+								Mix_Volume(-1, 128);
+								Mix_Volume(1, 40);
+								Mix_VolumeMusic(50);
+							}
 						}
 					}
 					else if (oyunDurumu == OYUNSONU_EKRANI)
