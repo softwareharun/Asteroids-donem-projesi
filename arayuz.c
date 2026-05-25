@@ -77,7 +77,7 @@ void skorYaz()
     SDL_Texture* yaziDokusu = SDL_CreateTextureFromSurface(ekrancizici, yaziYuzeyi);
     SDL_Rect yaziKutusu;
     yaziKutusu.x = (pencereGenisligi - yaziYuzeyi->w) / 2;
-    yaziKutusu.y = (20);
+    yaziKutusu.y = 20;
     yaziKutusu.w = yaziYuzeyi->w;
     yaziKutusu.h = yaziYuzeyi->h;
 
@@ -141,12 +141,9 @@ void rekoruVeSkoruYaz() // burda ise yazdirma islemi yapiyoruz
 
         SDL_Texture* rekorResmi = SDL_CreateTextureFromSurface(ekrancizici, rekorYuzeyi);
 
-
         SDL_Rect rekorKutusu = { 360, 360, rekorYuzeyi->w, rekorYuzeyi->h };
 
-
         SDL_RenderCopy(ekrancizici, rekorResmi, NULL, &rekorKutusu);
-
 
         SDL_FreeSurface(rekorYuzeyi);
         SDL_DestroyTexture(rekorResmi);
@@ -480,4 +477,48 @@ void kontrollerMenusuCiz()
         aktifButon = 0;
     }
 
+}
+
+void ucluSayaci(Gemi* gemi)
+{
+    if (gemi->ucluAktif == true)
+    {
+        Uint32 anlikZaman = SDL_GetTicks();
+        if (gemi->ucluSayac > anlikZaman)
+        {
+            int kalanSaniye = (gemi->ucluSayac - anlikZaman + 999) / 1000; // saniye formatina getiriyoruz ve ekrana yaziyoruz
+            char sureMetni[50];
+            sprintf(sureMetni, "Uclu Atis : %d", kalanSaniye);
+
+            SDL_Color kirmizi = { 255, 0, 0, 255 };
+
+            SDL_Surface* yaziYuzeyi = TTF_RenderText_Solid(font, sureMetni, kirmizi);
+            SDL_Texture* yaziDokusu = SDL_CreateTextureFromSurface(ekrancizici, yaziYuzeyi);
+
+            SDL_Rect sayacKutusu = { 600, 20, yaziYuzeyi->w, yaziYuzeyi->h};
+            SDL_RenderCopy(ekrancizici, yaziDokusu, NULL, &sayacKutusu);
+
+            SDL_DestroyTexture(yaziDokusu);
+            SDL_FreeSurface(yaziYuzeyi);
+        }
+    }
+}
+
+void kalkaniCiz(Gemi* gemi)
+{
+    if (gemi->kalkanAktif == true && kalkan != NULL)
+    {
+        SDL_SetTextureBlendMode(kalkan, SDL_BLENDMODE_BLEND); //kalkani saydamlastiriyoruz
+        SDL_SetTextureAlphaMod(kalkan, 120);
+
+        SDL_Rect kalkanKutusu; // kalkani geminden biraz büyük yapiyoruz
+        kalkanKutusu.w = gemi->gemikutusu.w + 30;
+        kalkanKutusu.h = gemi->gemikutusu.h + 30;
+
+        kalkanKutusu.x = (int)gemi->x - 15; // etrafina yerlestiriyoruz
+        kalkanKutusu.y = (int)gemi->y - 15; 
+
+        SDL_Point merkez = { kalkanKutusu.w / 2, kalkanKutusu.h / 2 }; 
+        SDL_RenderCopyEx(ekrancizici, kalkan, NULL, &kalkanKutusu, gemi->aci, &merkez, SDL_FLIP_NONE);
+    }
 }

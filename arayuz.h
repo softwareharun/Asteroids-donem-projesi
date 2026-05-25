@@ -7,6 +7,7 @@
 
 extern SDL_Window* pencere;
 extern SDL_Renderer* ekrancizici;
+extern SDL_Texture* kalkan;
 extern TTF_Font* font;
 extern SDL_Texture* oyunSonuEkrani;
 extern SDL_Texture* girisEkrani;
@@ -40,9 +41,12 @@ void skorYaz();
 void rekoruOku();
 void rekoruKaydet();
 void rekoruVeSkoruYaz();
+void ucluSayaci(Gemi* gemi);
 void girisEkraniniCiz();
 void duraklatmaEkraniCiz();
 void oyunsonuEkraniCiz();
 void kontrollerMenusuCiz();
+void kalkaniCiz(Gemi* gemi);
+
 
 #endif

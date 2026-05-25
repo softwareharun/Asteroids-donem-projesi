@@ -25,6 +25,7 @@ void meteorVurma(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) // meteor vur
 						if (meteorlar[j].cesit == 7)
 						{
 							gemi->ucluAktif = true;
+							gemi->ucluSayac = SDL_GetTicks() + 10000; // 10000 milisaniye 10 saniye ayarliyoruz
 						}
 
 						meteorlar[j].canli = false;
@@ -103,6 +104,7 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 		{
 			if (SDL_HasIntersection(&gemi->gemikutusu, &meteorlar[i].meteorKutusu))
 			{
+				Mix_PlayChannel(31, hasarSesi, 0); // hasar alma sesi 
 				meteorlar[i].canli = false;
 
 				if (gemi->kalkanAktif == true) // eger kalkani aldiysak hasar alma kismini atlatip kalkani kiriyoruz

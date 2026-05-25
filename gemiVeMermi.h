@@ -33,6 +33,7 @@ typedef struct {
 	int can;
 	bool ucluAktif;
 	bool kalkanAktif;
+	Uint32 ucluSayac;
 	SDL_Rect gemikutusu;// SDL_Rect gemi olan ve geminin baslangýc konumunu belirten structu buraya aldim kutu ile degistirdim
 } Gemi;
 

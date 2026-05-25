@@ -19,6 +19,7 @@ SDL_Renderer* ekrancizici = NULL;//iþlemciyi kullanan surface yerine artik ekran
 SDL_Texture* arkaPlanResmi = NULL;
 SDL_Texture* uzayGemisi = NULL;//texture de renderer gibi ekran karti kullanir ve daha hizlidir saydam halde getirebilmek ve fotografi döndürebilmek icin kullaniyoruz
 SDL_Texture* mermi = NULL; //mermi olusturuyoruz
+SDL_Texture* kalkan = NULL;
 //---------METEORLAR------------//
 SDL_Texture* meteor1 = NULL;
 SDL_Texture* meteor2 = NULL;
@@ -54,6 +55,7 @@ Mix_Chunk* mermiSesi = NULL;
 Mix_Chunk* patlamaSesi = NULL;
 Mix_Chunk* gazSesi = NULL;
 Mix_Chunk* butonSesi = NULL;
+Mix_Chunk* hasarSesi = NULL;
 Mix_Music* arkaPlanMuzigi = NULL;
 //-------------SESLER-------------//
 
@@ -123,6 +125,10 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	{
 		printf("Duraklatma ekrani yuklenemedi.. Hata : %s\n", SDL_GetError());
 		return false;
+	}
+	kalkan = IMG_LoadTexture(ekrancizici, "resimler/kalkan.png");
+	if (kalkan == NULL) {
+		printf("Kalkan fotografi yuklenemed.. Hata : %s\n", SDL_GetError());
 	}
 	btnbasla = IMG_LoadTexture(ekrancizici, "resimler/basla.png");
 	if (btnbasla == NULL)
@@ -219,6 +225,11 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	{
 		return false;
 	}
+	hasarSesi = Mix_LoadWAV("sesler/hasar.wav");
+	if (hasarSesi == NULL)
+	{
+		return false;
+	}
 	arkaPlanMuzigi = Mix_LoadMUS("sesler/arkaplansesi.mp3");
 	if (arkaPlanMuzigi == NULL) {
 		return false;
@@ -245,12 +256,15 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	TTF_Quit();
 	SDL_DestroyTexture(uzayGemisi);//burda fotografi siliyoruz
 	SDL_DestroyTexture(mermi);
+	SDL_DestroyTexture(kalkan);
 	SDL_DestroyTexture(meteor1);
 	SDL_DestroyTexture(meteor2);
 	SDL_DestroyTexture(meteor3);
 	SDL_DestroyTexture(planet1);
 	SDL_DestroyTexture(planet2);
 	SDL_DestroyTexture(planet3);
+	SDL_DestroyTexture(ucluMeteor);
+	SDL_DestroyTexture(kalkanliMeteor);
 	SDL_DestroyTexture(oyunSonuEkrani);
 	SDL_DestroyTexture(girisEkrani);
 	SDL_DestroyTexture(duraklatmaEkrani);
@@ -263,9 +277,12 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	SDL_DestroyTexture(btnoynsonuanamenu);
 	SDL_DestroyTexture(btntekraroyna);
 	SDL_DestroyTexture(btncik);
+	SDL_DestroyTexture(btngeridon);
+	SDL_DestroyTexture(btnses);
 	Mix_FreeChunk(mermiSesi); 
 	Mix_FreeChunk(patlamaSesi);
 	Mix_FreeChunk(gazSesi);
+	Mix_FreeChunk(hasarSesi);
 	Mix_FreeMusic(arkaPlanMuzigi);
 	Mix_CloseAudio();
 	SDL_DestroyRenderer(ekrancizici);//rendereri kapatiyoruz
@@ -296,6 +313,10 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 	{
 		meteorlar[i].canli = false;
 	}
+
+	gemi->ucluAktif = false;
+	gemi->ucluSayac = 0;
+	gemi->kalkanAktif = false;
 
 	skor = 0;
 }
@@ -489,11 +510,13 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 		}
 
 			gemiCiz(&gemi);
+			kalkaniCiz(&gemi);
 			mermiCiz(mermiler);
 			meteorlariCiz(meteorlar);
 			canBari(&gemi);
 			canSayisi(&gemi);
 			skorYaz();
+			ucluSayaci(&gemi);
 		}
 
 		if (oyunDurumu == DURAKLATMA_EKRANI)

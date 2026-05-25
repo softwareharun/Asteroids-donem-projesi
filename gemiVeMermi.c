@@ -114,6 +114,12 @@ void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin maind
 	{
 		(gemi->atisSuresi)--;
 	}
+
+	if (gemi->ucluAktif == true && SDL_GetTicks() > gemi->ucluSayac) // sayac bitmedikce
+	{
+		gemi->ucluAktif = false; 
+	}
+
 	if (tuslar[SDL_SCANCODE_SPACE] && gemi->atisSuresi == 0) // eger space ye basildiysa ve aradan atis süresi kadar kare gectiyse
 	{
 		int atilanMermi = 0; // guclendirme yokken tek mermi
