@@ -45,6 +45,7 @@ SDL_Texture* btntekraroyna = NULL;
 SDL_Texture* btncik = NULL;
 SDL_Texture* btngeridon = NULL;
 SDL_Texture* btnses = NULL;
+SDL_Texture* btnseskapali = NULL;
 //-------------BUTONLAR------------//
 //-------------------SESLER----------------//
 Mix_Chunk* mermiSesi = NULL;
@@ -178,6 +179,11 @@ bool pencereyiAC()//pencereyi açmayý ve sdl yi baþlatmayi bir fonksiyonla yapýyo
 	}
 	btnses = IMG_LoadTexture(ekrancizici, "resimler/btnses.png");
 	if (btnses == NULL)
+	{
+		return false;
+	}
+	btnseskapali = IMG_LoadTexture(ekrancizici, "resimler/btnseskapali.png");
+	if (btnseskapali == NULL)
 	{
 		return false;
 	}
@@ -350,7 +356,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 						{
 							oyunDevamEdiyor = false;
 						}
-						if (tikX > 19 && tikX < 69 && tikY > 19 && tikY < 69)
+						if (tikX > 18 && tikX < 70 && tikY > 18 && tikY < 70)
 						{
 							sesAcik = !sesAcik;
 							if (sesAcik == false)
@@ -380,7 +386,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 						{
 							oyunDevamEdiyor = false;
 						}
-						if (tikX > 16 && tikX < 66 && tikY > 16 && tikY < 66)
+						if (tikX > 16 && tikX < 71 && tikY > 16 && tikY < 71)
 						{
 							sesAcik = !sesAcik;
 							if (sesAcik == false)

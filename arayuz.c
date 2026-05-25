@@ -161,7 +161,7 @@ void girisEkraniniCiz()
     SDL_Rect baslaKutu = { 254, 336, 300, 60 }; 
     SDL_Rect kntrlKutu = { 254, 403, 300, 60 };
     SDL_Rect cikisKutu = { 254, 470, 300, 60 };
-    SDL_Rect sesKutu = { 19, 19, 50, 50 };
+    SDL_Rect sesKutu = { 18, 18, 52, 52 };
 
     if (fareX > baslaKutu.x && fareX < (baslaKutu.x + baslaKutu.w) && fareY > baslaKutu.y && fareY < (baslaKutu.y + baslaKutu.h)) //eger faremiz butonun icindeyse
     {
@@ -230,14 +230,33 @@ void girisEkraniniCiz()
             sesKutu.w + 5,
             sesKutu.h + 5
         };
-        if (btnses != NULL)
+        if (sesAcik == true)
         {
-            SDL_RenderCopy(ekrancizici, btnses, NULL, &yeniSes);
+            if (btnses != NULL)
+            {
+                SDL_RenderCopy(ekrancizici, btnses, NULL, &yeniSes);
+            }
         }
+        if (sesAcik == false)
+        {
+            if (btnseskapali != NULL)
+            {
+                SDL_RenderCopy(ekrancizici, btnseskapali, NULL, &yeniSes);
+            }
+        }
+        
     }
     else
     {
         aktifButon = 0;
+    }
+
+    if (aktifButon != 11 && sesAcik == false)
+    {
+        if (btnseskapali != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btnseskapali, NULL, &sesKutu);
+        }
     }
 }
 
@@ -251,7 +270,7 @@ void duraklatmaEkraniCiz()
     SDL_Rect anaMenuKutu = { 227, 321, 350, 60 };
     SDL_Rect devametKutu = { 227, 393, 350, 60 };
     SDL_Rect drkltmacikisKutu = { 227, 467, 350, 60 };
-    SDL_Rect drkltmasesKutu = { 16, 16, 50, 50 };
+    SDL_Rect drkltmasesKutu = { 16, 16, 55, 55 };
 
     if (fareX > anaMenuKutu.x && fareX < (anaMenuKutu.x + anaMenuKutu.w) && fareY > anaMenuKutu.y && fareY < (anaMenuKutu.y + anaMenuKutu.h)) 
     {
@@ -327,14 +346,32 @@ void duraklatmaEkraniCiz()
             drkltmasesKutu.w + 7,
             drkltmasesKutu.h + 7
         };
-        if (btnses != NULL)
+        if (sesAcik == true)
         {
-            SDL_RenderCopy(ekrancizici, btnses, NULL, &yenidrkltmaSes);
+            if (btnses != NULL)
+            {
+                SDL_RenderCopy(ekrancizici, btnses, NULL, &yenidrkltmaSes);
+            }
+        }
+        if (sesAcik == false)
+        {
+            if (btnseskapali != NULL)
+            {
+                SDL_RenderCopy(ekrancizici, btnseskapali, NULL, &yenidrkltmaSes);
+            }
         }
     }
     else
     {
         aktifButon = 0;
+    }
+
+    if (aktifButon != 12 && sesAcik == false)
+    {
+        if (btnseskapali != NULL)
+        {
+            SDL_RenderCopy(ekrancizici, btnseskapali, NULL, &drkltmasesKutu);
+        }
     }
 }
 
