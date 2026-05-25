@@ -26,6 +26,8 @@ SDL_Texture* meteor3 = NULL;
 SDL_Texture* planet1 = NULL;
 SDL_Texture* planet2 = NULL;
 SDL_Texture* planet3 = NULL;
+SDL_Texture* kalkanliMeteor = NULL;
+SDL_Texture* ucluMeteor = NULL;
 //---------METEORLAR------------//
 //--------------EKRANLAR----------// 
 SDL_Texture* oyunSonuEkrani = NULL;
@@ -473,7 +475,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 			mermiAtesle(mermiler, &gemi);
 			meteorlariFirlat(meteorlar);
 			meteorlariHareketEttir(meteorlar);
-			meteorVurma(mermiler, meteorlar);
+			meteorVurma(&gemi, mermiler, meteorlar);
 			hasarAlma(&gemi, meteorlar);
 
 		if (gemi.can <= 0) // hasarAlma fonksiyonundan sonra geminin canini kontrol ediyoruz

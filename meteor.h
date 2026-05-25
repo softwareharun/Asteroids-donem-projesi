@@ -19,6 +19,8 @@ extern SDL_Texture* meteor3;
 extern SDL_Texture* planet1;
 extern SDL_Texture* planet2;
 extern SDL_Texture* planet3;
+extern SDL_Texture* kalkanliMeteor;
+extern SDL_Texture* ucluMeteor;
 
 typedef struct { //meteorumuzun konumunu hizini acisini durumunu tutucak
 	double x;

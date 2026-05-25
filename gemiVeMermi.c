@@ -116,13 +116,22 @@ void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin maind
 	}
 	if (tuslar[SDL_SCANCODE_SPACE] && gemi->atisSuresi == 0) // eger space ye basildiysa ve aradan atis süresi kadar kare gectiyse
 	{
+		int atilanMermi = 0; // guclendirme yokken tek mermi
+		int mermiLimiti = 1;
+
+		if (gemi->ucluAktif == true) // aktif ettiysek limiti 3 yapiyoruz
+		{
+			mermiLimiti = 3;
+		}
+		double acilar[3] = {gemi->aci, gemi->aci - 15.0, gemi->aci + 15.0}; // mermilerin cikis acisi
+
 		for (int i = 0; i < MAXMERMI; i++)
 		{
 			if (mermiler[i].canli == false) // siradaki atilmaya hazir ise 
 			{
 				mermiler[i].x = gemi->x + 28; // konumlari giriyoruz
 				mermiler[i].y = gemi->y + 28;
-				mermiler[i].aci = gemi->aci; // geminin baktigi yönle esitliyoruz
+				mermiler[i].aci = acilar[atilanMermi]; // 3 merminin de acisini tutuyor
 				mermiler[i].canli = true; // o sýradaki mermiyi 1 yaparak atesliyoruz
 				gemi->atisSuresi = 28;
 				mermiler[i].mermikutusu.x = (int)mermiler[i].x; //baska fonksiyonu beklemeden burada mermiyi geminin ucunda baslatiyoruz ve artik mermi meteora carptikdan sonra o konumda kalmasini engelliyoruz
@@ -130,10 +139,13 @@ void mermiAtesle(Mermi mermiler[], Gemi* gemi) // mermimizi ateslemek icin maind
 				mermiler[i].mermikutusu.w = 16; //mermi boyutlari
 				mermiler[i].mermikutusu.h = 16;
 
-				int mermiKanali = (rand() % 10) + 10;
-				Mix_PlayChannel(mermiKanali, mermiSesi, 0);
-
-				break;
+				atilanMermi++;
+				if (atilanMermi == mermiLimiti) // 3 e geldiginde donguden cikar
+				{
+					int mermiKanali = (rand() % 10) + 10;
+					Mix_PlayChannel(mermiKanali, mermiSesi, 0);
+					break;
+				}
 			}
 		}
 	}

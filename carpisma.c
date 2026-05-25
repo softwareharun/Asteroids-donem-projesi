@@ -3,7 +3,7 @@
 #include "gemiVeMermi.h"
 #include "meteor.h"
 
-void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu kontrol ediyoruz eger mermi ve meteorun kutulari kesisiyorsa her ikisini de ölü yaparak ekrandan kaybolmalarini sagliyoruz
+void meteorVurma(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu kontrol ediyoruz eger mermi ve meteorun kutulari kesisiyorsa her ikisini de ölü yaparak ekrandan kaybolmalarini sagliyoruz
 {
 	for (int i = 0; i < MAXMERMI; i++)
 	{
@@ -17,6 +17,16 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 					{
 
 						mermiler[i].canli = false;
+
+						if (meteorlar[j].cesit == 6) // ozel meteorlar ise guclendirmeleri aktif ediyoruz
+						{
+							gemi->kalkanAktif = true;
+						}
+						if (meteorlar[j].cesit == 7)
+						{
+							gemi->ucluAktif = true;
+						}
+
 						meteorlar[j].canli = false;
 
 						int patlamaKanali = (rand() % 10) + 20;
@@ -24,7 +34,7 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 
 						skor += 10;
 
-						if (meteorlar[j].meteorKutusu.w > 70) // meteor kücük degilse
+						if (meteorlar[j].meteorKutusu.w > 70 && meteorlar[j].meteorKutusu.w != 80) // meteor kücük degilse ve ozel meteorlar degilse
 						{
 							int yeniMeteor = 0; // 2 mermi olusturmak icin
 							for (int k = 0; k < MAXMETEOR; k++) // yeni meteorlari tutucaz
@@ -86,6 +96,7 @@ void meteorVurma(Mermi mermiler[], Meteor meteorlar[]) // meteor vurma durumunu 
 void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CANÝMÝZÝ AZALTÝYORUZ
 {
 	gemi->savrulmaHizi = 1.0;
+
 	for (int i = 0; i < MAXMETEOR; i++)
 	{
 		if (meteorlar[i].canli == true)
@@ -93,6 +104,12 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 			if (SDL_HasIntersection(&gemi->gemikutusu, &meteorlar[i].meteorKutusu))
 			{
 				meteorlar[i].canli = false;
+
+				if (gemi->kalkanAktif == true) // eger kalkani aldiysak hasar alma kismini atlatip kalkani kiriyoruz
+				{
+					gemi->kalkanAktif = false;
+					continue;
+				}
 
 				if (meteorlar[i].meteorKutusu.w == 110)
 				{

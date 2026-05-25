@@ -11,6 +11,8 @@ void meteorOlustur(Meteor meteorlar[]) // meteorlari olusturuyoruz
 	planet1 = IMG_LoadTexture(ekrancizici, "resimler/dunya.png");
 	planet2 = IMG_LoadTexture(ekrancizici, "resimler/saturn.png");
 	planet3 = IMG_LoadTexture(ekrancizici, "resimler/uranus.png");
+	kalkanliMeteor = IMG_LoadTexture(ekrancizici, "resimler/kalkanliMeteor.png");
+	ucluMeteor = IMG_LoadTexture(ekrancizici, "resimler/ucluMeteor.png");
 
 	for (int i = 0; i < MAXMETEOR; i++)
 	{
@@ -29,7 +31,7 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 		{
 			if (meteorlar[i].canli == false)
 			{
-				meteorlar[i].cesit = rand() % 6;
+				meteorlar[i].cesit = rand() % 8;
 
 				if (meteorlar[i].cesit == 0) // hangi textureleriin hangi boyutta olcagi
 				{
@@ -45,6 +47,11 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 				{
 					meteorlar[i].meteorKutusu.w = 110;
 					meteorlar[i].meteorKutusu.h = 110;
+				}
+				if (meteorlar[i].cesit == 6 || meteorlar[i].cesit == 7) // yeni meteorlarin boyutlari
+				{
+					meteorlar[i].meteorKutusu.w = 80;
+					meteorlar[i].meteorKutusu.h = 80;
 				}
 				int kenar = rand() % 4; // kenardan olusmasi icin
 
@@ -146,6 +153,14 @@ void meteorlariCiz(Meteor meteorlar[]) // ekrana cizme
 			if (meteorlar[i].cesit == 5)
 			{
 				basilacakResim = planet3;
+			}
+			if (meteorlar[i].cesit == 6)
+			{
+				basilacakResim = kalkanliMeteor;
+			}
+			if (meteorlar[i].cesit == 7)
+			{
+				basilacakResim = ucluMeteor;
 			}
 
 			SDL_RenderCopyEx(ekrancizici, basilacakResim, NULL, &meteorlar[i].meteorKutusu, meteorlar[i].aci, NULL, SDL_FLIP_NONE); // meteorun hangi resimle cizilecegini belirliyoruz ve ciziyoruz
