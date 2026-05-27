@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include "arayuz.h"
+#include "meteor.h"
 
 void canBari(Gemi* gemi) {
    
@@ -520,5 +521,52 @@ void kalkaniCiz(Gemi* gemi)
 
         SDL_Point merkez = { kalkanKutusu.w / 2, kalkanKutusu.h / 2 }; 
         SDL_RenderCopyEx(ekrancizici, kalkan, NULL, &kalkanKutusu, gemi->aci, &merkez, SDL_FLIP_NONE);
+    }
+}
+
+
+void meteorCaniYaz(Meteor* m) // meteorlarin ortasina sahip olduklari cani yazdirdim
+{
+    // Sadece caný 1'den büyük olanlarda yazsýn
+    if (m->can > 0)
+    {
+        char canMetni[10];
+        sprintf(canMetni, "%d", m->can);
+
+        SDL_Color renk = { 255, 50, 50, 255 };
+
+        SDL_Surface* yaziYuzeyi = TTF_RenderText_Solid(font, canMetni, renk);
+        SDL_Texture* yaziDokusu = SDL_CreateTextureFromSurface(ekrancizici, yaziYuzeyi);
+
+        SDL_Rect yaziKutusu;
+        yaziKutusu.w = yaziYuzeyi->w;
+        yaziKutusu.h = yaziYuzeyi->h;
+
+        // Yazýyý tam meteorun merkezine (kalbine) mühürlüyoruz
+        yaziKutusu.x = m->meteorKutusu.x + (m->meteorKutusu.w / 2) - (yaziKutusu.w / 2);
+        yaziKutusu.y = m->meteorKutusu.y + (m->meteorKutusu.h / 2) - (yaziKutusu.h / 2);
+
+        SDL_RenderCopy(ekrancizici, yaziDokusu, NULL, &yaziKutusu);
+
+        SDL_FreeSurface(yaziYuzeyi);
+        SDL_DestroyTexture(yaziDokusu);
+    }
+}
+
+
+void uyariCiz() // ekranda saniyede 4 kez yanýcak kirmizi uyari
+{
+    if (uyariSayaci > 0)
+    {
+        uyariSayaci--;
+
+        if ((uyariSayaci / 15) % 2 == 0)
+        {
+            SDL_SetRenderDrawBlendMode(ekrancizici, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(ekrancizici, 255, 0, 0, 100); 
+
+            SDL_Rect tumEkran = { 0, 0, pencereGenisligi, pencereUzunlugu };
+            SDL_RenderFillRect(ekrancizici, &tumEkran);
+        }
     }
 }

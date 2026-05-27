@@ -8,9 +8,9 @@ void meteorOlustur(Meteor meteorlar[]) // meteorlari olusturuyoruz
 	meteor1 = IMG_LoadTexture(ekrancizici, "resimler/meteor.png");
 	meteor2 = IMG_LoadTexture(ekrancizici, "resimler/meteor2.png");
 	meteor3 = IMG_LoadTexture(ekrancizici, "resimler/meteor3.png");
-	planet1 = IMG_LoadTexture(ekrancizici, "resimler/dunya.png");
-	planet2 = IMG_LoadTexture(ekrancizici, "resimler/saturn.png");
-	planet3 = IMG_LoadTexture(ekrancizici, "resimler/uranus.png");
+	meteor4 = IMG_LoadTexture(ekrancizici, "resimler/meteor4.png");
+	meteor5 = IMG_LoadTexture(ekrancizici, "resimler/meteor5.png");
+	meteor6 = IMG_LoadTexture(ekrancizici, "resimler/meteor6.png");
 	kalkanliMeteor = IMG_LoadTexture(ekrancizici, "resimler/kalkanliMeteor.png");
 	ucluMeteor = IMG_LoadTexture(ekrancizici, "resimler/ucluMeteor.png");
 
@@ -25,13 +25,30 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 {
 	double hedefX = pencereGenisligi / 2.0; //en ortayi hedefliyoruz
 	double hedefY = pencereUzunlugu / 2.0;
-	if (rand() % 80 == 0) // hepsi bir anda olusmamasi icin
+	if (rand() % 100 == 0) // hepsi bir anda olusmamasi icin
 	{
 		for (int i = 0; i < MAXMETEOR; i++)
 		{
 			if (meteorlar[i].canli == false)
 			{
-				meteorlar[i].cesit = rand() % 8;
+				int ihtimal = rand() % 100; // 0 ile 99 arasý yüzdelik zar atýyoruz
+				int normalSinir = 100 - guclendirmeIhtimali; // gucIhtimali 20 ise, 0-79 arasý normal meteordur
+
+				if (ihtimal < normalSinir)
+				{
+					meteorlar[i].cesit = rand() % 6;    // Sadece 0-5 arasý normal meteorlar
+					meteorlar[i].can = meteorCani; // Normal meteorlara o anki zorluk seviyesinin canýný ver!
+				}
+				else if (ihtimal >= normalSinir && ihtimal < normalSinir + (guclendirmeIhtimali / 2))
+				{
+					meteorlar[i].cesit = 6; // Kalkan Kutusu
+					meteorlar[i].can = 1;   // Kutu olduðu için caný hep 1 kalmalý (tek yemelidir)
+				}
+				else
+				{
+					meteorlar[i].cesit = 7; // Üçlü Lazer Kutusu
+					meteorlar[i].can = 1;   // Kutu olduðu için caný hep 1 kalmalý
+				}
 
 				if (meteorlar[i].cesit == 0) // hangi textureleriin hangi boyutta olcagi
 				{
@@ -144,15 +161,15 @@ void meteorlariCiz(Meteor meteorlar[]) // ekrana cizme
 			}
 			if (meteorlar[i].cesit == 3)
 			{
-				basilacakResim = planet1;
+				basilacakResim = meteor4;
 			}
 			if (meteorlar[i].cesit == 4)
 			{
-				basilacakResim = planet2;
+				basilacakResim = meteor5;
 			}
 			if (meteorlar[i].cesit == 5)
 			{
-				basilacakResim = planet3;
+				basilacakResim = meteor6;
 			}
 			if (meteorlar[i].cesit == 6)
 			{
@@ -164,6 +181,11 @@ void meteorlariCiz(Meteor meteorlar[]) // ekrana cizme
 			}
 
 			SDL_RenderCopyEx(ekrancizici, basilacakResim, NULL, &meteorlar[i].meteorKutusu, meteorlar[i].aci, NULL, SDL_FLIP_NONE); // meteorun hangi resimle cizilecegini belirliyoruz ve ciziyoruz
+	
+			meteorCaniYaz(&meteorlar[i]);
+	
 		}
 	}
 }
+
+

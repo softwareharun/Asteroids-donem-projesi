@@ -24,9 +24,9 @@ SDL_Texture* kalkan = NULL;
 SDL_Texture* meteor1 = NULL;
 SDL_Texture* meteor2 = NULL;
 SDL_Texture* meteor3 = NULL;
-SDL_Texture* planet1 = NULL;
-SDL_Texture* planet2 = NULL;
-SDL_Texture* planet3 = NULL;
+SDL_Texture* meteor4 = NULL;
+SDL_Texture* meteor5 = NULL;
+SDL_Texture* meteor6 = NULL;
 SDL_Texture* kalkanliMeteor = NULL;
 SDL_Texture* ucluMeteor = NULL;
 //---------METEORLAR------------//
@@ -71,6 +71,11 @@ bool tamEkran = false;
 bool sesAcik = true;
 int fareX, fareY; // tam ekrana geldiðinde buton etkilesimini düzeltmek icin
 int aktifButon = 0;
+
+int zorlukBaraji = 0; // zorlugu degistircek sayac meteora can tanimladim
+int uyariSayaci = 0;
+int meteorCani = 1;
+int guclendirmeIhtimali = 20;
 
 
 const Uint8* tuslar; // parametre gönderirken bunuda göndermemek icin burda tanimladim 
@@ -260,9 +265,9 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	SDL_DestroyTexture(meteor1);
 	SDL_DestroyTexture(meteor2);
 	SDL_DestroyTexture(meteor3);
-	SDL_DestroyTexture(planet1);
-	SDL_DestroyTexture(planet2);
-	SDL_DestroyTexture(planet3);
+	SDL_DestroyTexture(meteor4);
+	SDL_DestroyTexture(meteor5);
+	SDL_DestroyTexture(meteor6);
 	SDL_DestroyTexture(ucluMeteor);
 	SDL_DestroyTexture(kalkanliMeteor);
 	SDL_DestroyTexture(oyunSonuEkrani);
@@ -317,6 +322,11 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 	gemi->ucluAktif = false;
 	gemi->ucluSayac = 0;
 	gemi->kalkanAktif = false;
+
+	meteorCani = 1;
+	zorlukBaraji = 0;
+	uyariSayaci = 0;
+	guclendirmeIhtimali = 20;    
 
 	skor = 0;
 }
@@ -517,6 +527,8 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 			canSayisi(&gemi);
 			skorYaz();
 			ucluSayaci(&gemi);
+			uyariCiz();
+			
 		}
 
 		if (oyunDurumu == DURAKLATMA_EKRANI)

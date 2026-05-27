@@ -28,65 +28,83 @@ void meteorVurma(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) // meteor vur
 							gemi->ucluSayac = SDL_GetTicks() + 10000; // 10000 milisaniye 10 saniye ayarliyoruz
 						}
 
-						meteorlar[j].canli = false;
-
+						meteorlar[j].can --; // vurduysak canini azaltiyoruz
+						
 						int patlamaKanali = (rand() % 10) + 20;
 						Mix_PlayChannel(patlamaKanali, patlamaSesi, 0);
-
-						skor += 10;
-
-						if (meteorlar[j].meteorKutusu.w > 70 && meteorlar[j].meteorKutusu.w != 80) // meteor kücük degilse ve ozel meteorlar degilse
-						{
-							int yeniMeteor = 0; // 2 mermi olusturmak icin
-							for (int k = 0; k < MAXMETEOR; k++) // yeni meteorlari tutucaz
-							{
-								if (meteorlar[k].canli == false && k != j) // bos bir yer bulup orda bolunen parcayi dogurcaz ama buyuk olanýn ustune yazmasini istemiyoruz
+						
+								if (meteorlar[j].can <= 0) // can 0 a düþerse
 								{
-									meteorlar[k].canli = true;
+									meteorlar[j].canli = false; //öldür
+									skor += 25;
 
-									meteorlar[k].cesit = meteorlar[j].cesit; // resmin ayni kalmasini istiyoruz
 
-									meteorlar[k].x = meteorlar[j].x; //ayni konumdan firlicaklar
-									meteorlar[k].y = meteorlar[j].y;
-
-									meteorlar[k].meteorKutusu.x = (int)meteorlar[k].x; //BURADA KONUMU GUNCELLÝYORUZ OLENIN YERINDE PARLAMA SORUNUNU COZDUM
-									meteorlar[k].meteorKutusu.y = (int)meteorlar[k].y;
-
-									if (meteorlar[j].meteorKutusu.w == 110) //enbuyukse 2 tane orta yap
+									if (skor >= zorlukBaraji + 500) // skor her 500 arttýgýnda
 									{
-										meteorlar[k].meteorKutusu.w = 90;
-										meteorlar[k].meteorKutusu.h = 90;
+										zorlukBaraji += 500;
+										uyariSayaci = 120; // ekranda zorlugun degistigini göstermek icin 
+										meteorCani++;
+
+										if (guclendirmeIhtimali > 6) // guclendirme çýkma ihtimalini azaltýyoruz
+										{
+											guclendirmeIhtimali -= 4;
+										}
 									}
-									else //orta ise 2 tane kucuk yap
+									if (meteorlar[j].meteorKutusu.w > 70 && meteorlar[j].meteorKutusu.w != 80) // meteor kücük degilse ve ozel meteorlar degilse
 									{
-										meteorlar[k].meteorKutusu.w = 70;
-										meteorlar[k].meteorKutusu.h = 70;
-									}
-									meteorlar[k].hizX = ((rand() % 5) - 2.0); //rastgele hizlarla gitsinler
-									meteorlar[k].hizY = ((rand() % 5) - 2.0);
+										int yeniMeteor = 0; // 2 mermi olusturmak icin
+										for (int k = 0; k < MAXMETEOR; k++) // yeni meteorlari tutucaz
+										{
+											if (meteorlar[k].canli == false && k != j) // bos bir yer bulup orda bolunen parcayi dogurcaz ama buyuk olanýn ustune yazmasini istemiyoruz
+											{
+												meteorlar[k].canli = true;
 
-									if (meteorlar[k].hizX == 0) //eger 0 cýkarsa meteorun durmamasi icin
-									{
-										meteorlar[k].hizX = 1.5;
-									}
-									if (meteorlar[k].hizY == 0)
-									{
-										meteorlar[k].hizY = -1.5;
-									}
+												meteorlar[k].cesit = meteorlar[j].cesit; // resmin ayni kalmasini istiyoruz
 
-									meteorlar[k].aci = 0;
-									meteorlar[k].donmeHizi = 2.0; //donme acisi sabit olsun
+												meteorlar[k].x = meteorlar[j].x; //ayni konumdan firlicaklar
+												meteorlar[k].y = meteorlar[j].y;
 
-									yeniMeteor++;
-									if (yeniMeteor == 2)
-									{
-										break; //donguden cikart
+												meteorlar[k].meteorKutusu.x = (int)meteorlar[k].x; //BURADA KONUMU GUNCELLÝYORUZ OLENIN YERINDE PARLAMA SORUNUNU COZDUM
+												meteorlar[k].meteorKutusu.y = (int)meteorlar[k].y;
+
+												if (meteorlar[j].meteorKutusu.w == 110) //enbuyukse 2 tane orta yap
+												{
+													meteorlar[k].meteorKutusu.w = 90;
+													meteorlar[k].meteorKutusu.h = 90;
+													meteorlar[k].can = 1; // yavrular hep 1 can dogsun
+												}
+												else //orta ise 2 tane kucuk yap
+												{
+													meteorlar[k].meteorKutusu.w = 70;
+													meteorlar[k].meteorKutusu.h = 70;
+													meteorlar[k].can = 1;
+												}
+
+												meteorlar[k].hizX = ((rand() % 5) - 2.0); //rastgele hizlarla gitsinler
+												meteorlar[k].hizY = ((rand() % 5) - 2.0);
+
+												if (meteorlar[k].hizX == 0) //eger 0 cýkarsa meteorun durmamasi icin
+												{
+													meteorlar[k].hizX = 1.5;
+												}
+												if (meteorlar[k].hizY == 0)
+												{
+													meteorlar[k].hizY = -1.5;
+												}
+
+												meteorlar[k].aci = 0;
+												meteorlar[k].donmeHizi = 2.0; //donme acisi sabit olsun
+
+												yeniMeteor++;
+												if (yeniMeteor == 2)
+												{
+													break; //donguden cikart
+												}
+											}
+										}
 									}
 								}
-							}
-						}
-
-						break;
+								break;
 					}
 				}
 			}

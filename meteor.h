@@ -11,14 +11,18 @@
 extern const int pencereUzunlugu;
 extern const int pencereGenisligi;
 extern int skor;
+extern int meteorCani;
+extern int zorlukBaraji;
+extern int uyariSayaci;
+extern int guclendirmeIhtimali;
 extern SDL_Renderer* ekrancizici;
 
 extern SDL_Texture* meteor1;
 extern SDL_Texture* meteor2;
 extern SDL_Texture* meteor3;
-extern SDL_Texture* planet1;
-extern SDL_Texture* planet2;
-extern SDL_Texture* planet3;
+extern SDL_Texture* meteor4;
+extern SDL_Texture* meteor5;
+extern SDL_Texture* meteor6;
 extern SDL_Texture* kalkanliMeteor;
 extern SDL_Texture* ucluMeteor;
 
@@ -31,6 +35,7 @@ typedef struct { //meteorumuzun konumunu hizini acisini durumunu tutucak
 	double donmeHizi;
 	bool canli;
 	int cesit;
+	int can;
 	SDL_Rect meteorKutusu;
 
 }Meteor;

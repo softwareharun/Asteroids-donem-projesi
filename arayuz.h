@@ -47,6 +47,7 @@ void duraklatmaEkraniCiz();
 void oyunsonuEkraniCiz();
 void kontrollerMenusuCiz();
 void kalkaniCiz(Gemi* gemi);
+void uyariCiz();
 
 
 #endif
