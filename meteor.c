@@ -25,7 +25,14 @@ void meteorlariFirlat(Meteor meteorlar[]) //meteorlarin boyutlarini ayarliyoruz 
 {
 	double hedefX = pencereGenisligi / 2.0; //en ortayi hedefliyoruz
 	double hedefY = pencereUzunlugu / 2.0;
-	if (rand() % 100 == 0) // hepsi bir anda olusmamasi icin
+	
+	int meteorDogmaIhtimali = 100 - meteorCani * 4; // meteorlarin canina bagli olarak meteor olusma sýklýgýný artirdim
+	if (meteorDogmaIhtimali < 20)
+	{
+		meteorDogmaIhtimali = 20;
+	}
+	
+	if (rand() % meteorDogmaIhtimali == 0) 
 	{
 		for (int i = 0; i < MAXMETEOR; i++)
 		{

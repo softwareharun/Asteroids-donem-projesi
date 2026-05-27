@@ -91,7 +91,7 @@ void skorYaz()
 void rekoruOku() //rekoru okuyoruz 
 {
     FILE* dosyadanOku;
-    dosyadanOku = fopen("resimler/rekor.txt", "r");
+    dosyadanOku = fopen("rekor.txt", "r");
 
     if (dosyadanOku != NULL)
     {
@@ -103,7 +103,7 @@ void rekoruOku() //rekoru okuyoruz
 void rekoruKaydet() //oyunu kapatýp actigimizda rekorun gitmemesi icin dosya acip oraya kaydediyoruz
 {
     FILE* dosyayaYaz;
-    dosyayaYaz = fopen("resimler/rekor.txt", "w");
+    dosyayaYaz = fopen("rekor.txt", "w");
     if (dosyayaYaz != NULL)
     {
         fprintf(dosyayaYaz, "%d", enYuksekSkor);
