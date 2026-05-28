@@ -11,6 +11,11 @@ Bu proje, C programlama dili ve SDL2 kütüphanesi kullanılarak sıfırdan geli
 ![Ana Menü](ekrangoruntuleri/anamenu.png)
 ![Oynanış Ekranı](ekrangoruntuleri/oyunici.png)
 
+
+https://github.com/user-attachments/assets/78a3b250-e846-4de9-88be-9f3422fddc6b
+
+
+
 ## Oyun Ozellikleri
 
 * **Modüler Mimari :** Proje tek bir dosyaya yığılmamış; arayüz, çarpışma, fizik ve yapay zeka sistemleri bağımsız `.h` ve `.c` dosyalarına bölünmüştür.
