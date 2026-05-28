@@ -6,7 +6,10 @@ Bu proje, C programlama dili ve SDL2 kütüphanesi kullanılarak sıfırdan geli
 
 ![Ana Menü](ekrangoruntuleri/anamenu.png)
 ![Oynanış Ekranı](ekrangoruntuleri/oyunici.png)
-[Kısa Oynanış Videosu](ekrangoruntuleri/kısaoynanıs.mp4)
+
+https://github.com/user-attachments/assets/78a3b250-e846-4de9-88be-9f3422fddc6b
+
+
 
 ## Oyun Ozellikleri
 
