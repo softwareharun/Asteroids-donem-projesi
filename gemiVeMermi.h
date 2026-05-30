@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <SDL_mixer.h>
+#include <stdlib.h>
 
 #define PI 3.14159265
 #define MAXMERMI 20

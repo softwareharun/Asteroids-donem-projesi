@@ -4,6 +4,7 @@
 #include <SDL_mixer.h>
 
 #include "gemiVeMermi.h"
+#include "meteor.h"
 
 extern SDL_Window* pencere;
 extern SDL_Renderer* ekrancizici;
@@ -48,6 +49,7 @@ void oyunsonuEkraniCiz();
 void kontrollerMenusuCiz();
 void kalkaniCiz(Gemi* gemi);
 void uyariCiz();
+void meteorCaniYaz(Meteor* m);
 
 
 #endif

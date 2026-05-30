@@ -296,7 +296,7 @@ void pencereyiKapat()//pencereyi kapatmayi da bir fonksiyona atiyoruz mainde bun
 	SDL_Quit(); //baþlattýgýmýz sdl lerin hepsini kapatiyoruz
 }
 
-void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfýrlýyoruz
+void oyunuSifirla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfýrlýyoruz
 {
 	gemi->x = (pencereGenisligi / 2.0) - (gemi->gemikutusu.w / 2.0); //gemiyi en ortaya aliyoruz
 	gemi->y = (pencereUzunlugu / 2.0) - (gemi->gemikutusu.h / 2.0);
@@ -378,7 +378,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 					{
 						if (tikX > 254 && tikX < 554 && tikY > 336 && tikY < 396)
 						{
-							oyunuSýfýrla(&gemi, mermiler, meteorlar);
+							oyunuSifirla(&gemi, mermiler, meteorlar);
 							oyunDurumu = OYUN_EKRANI;
 						}
 						if (tikX > 254 && tikX < 554 && tikY > 403 && tikY < 463)
@@ -443,7 +443,7 @@ void oyunuSýfýrla(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) //oyunu sýfý
 						}
 						if (tikX > 238 && tikX < 588 && tikY > 458 && tikY < 518)
 						{
-							oyunuSýfýrla(&gemi, mermiler, meteorlar);
+							oyunuSifirla(&gemi, mermiler, meteorlar);
 
 							oyunDurumu = OYUN_EKRANI;
 						}

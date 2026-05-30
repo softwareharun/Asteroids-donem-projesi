@@ -36,7 +36,7 @@ void meteorVurma(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) // meteor vur
 						if (meteorlar[j].can <= 0) // can 0 a düþerse
 						{
 							meteorlar[j].canli = false; //öldür
-							skor += 25;
+							skor += 10;
 
 
 							if (skor >= zorlukBaraji + 500) // skor her 500 arttýgýnda
@@ -44,6 +44,11 @@ void meteorVurma(Gemi* gemi, Mermi mermiler[], Meteor meteorlar[]) // meteor vur
 								zorlukBaraji += 500;
 								uyariSayaci = 120; // ekranda zorlugun degistigini göstermek icin 
 								meteorCani++;
+								gemi->can += 20;
+								if (gemi->can > 100)
+								{
+									gemi->can = 100;
+								}
 
 								if (guclendirmeIhtimali > 6) // guclendirme çýkma ihtimalini azaltýyoruz
 								{
@@ -134,15 +139,15 @@ void hasarAlma(Gemi* gemi, Meteor meteorlar[])//GEMÝ VE METEOR CARPÝSMASÝNDA CAN
 
 				if (meteorlar[i].meteorKutusu.w == 110)
 				{
-					gemi->can -= 50;
+					gemi->can -= 30;
 				}
 				if (meteorlar[i].meteorKutusu.w == 90)
 				{
-					gemi->can -= 30;
+					gemi->can -= 20;
 				}
 				if (meteorlar[i].meteorKutusu.w == 70)
 				{
-					gemi->can -= 20;
+					gemi->can -= 10;
 				}
 				double gMerkezX = gemi->x + (gemi->gemikutusu.w / 2.0);
 				double gMerkezY = gemi->y + (gemi->gemikutusu.h / 2.0);
